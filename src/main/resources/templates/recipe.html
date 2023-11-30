@@ -94,6 +94,12 @@
                     <button class="enter">Wyloguj</button>
                 </a>
             </div>
+            <div>
+                <form method="post" action="#" th:action="@{/recipes/delete/{id}(id=${recipe.id})}">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" class="enter delete w-100">Usuń przepis</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
