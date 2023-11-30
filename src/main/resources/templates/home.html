@@ -13,6 +13,9 @@
 <div class="container-fluid page" sec:authorize="!isAuthenticated()">
     <div class="row h-100">
         <div class="col-md-1 h-100">
+            <a href="#" th:href="@{/}">
+                <button disabled class="enter">Home</button>
+            </a>
         </div>
         <div class="col-md-10 main">
             <div class="header">
@@ -88,6 +91,9 @@
                 <a href="#" th:href="@{/login}" sec:authorize="!isAuthenticated()">
                     <button class="enter">Zaloguj</button>
                 </a>
+                <a href="#" th:href="@{/register}" sec:authorize="!isAuthenticated()">
+                    <button class="enter">Zarejestruj</button>
+                </a>
                 <a href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()">
                     <button class="enter">Wyloguj</button>
                 </a>
@@ -98,6 +104,9 @@
 <div class="container-fluid" sec:authorize="isAuthenticated()">
     <div class="row h-100">
         <div class="col-md-1 h-100">
+            <a href="#" th:href="@{/}">
+                <button disabled class="enter">Home</button>
+            </a>
         </div>
         <div class="col-md-10 main">
             <div class="header">
@@ -131,6 +140,9 @@
             <div class="login">
                 <a href="#" th:href="@{/login}" sec:authorize="!isAuthenticated()">
                     <button class="enter">Zaloguj</button>
+                </a>
+                <a href="#" th:href="@{/register}" sec:authorize="!isAuthenticated()">
+                    <button class="enter">Zarejestruj</button>
                 </a>
                 <a href="#" th:href="@{/logout}" sec:authorize="isAuthenticated()">
                     <button class="enter">Wyloguj</button>
