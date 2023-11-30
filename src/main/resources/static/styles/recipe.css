@@ -41,7 +41,7 @@ input {
     -16px -16px 32px #fefefe;
     border-radius: 8px;
     padding: 30px;
-    /*margin-bottom: 50px;*/
+    margin-bottom: 50px;
 }
 
 .inputBox,
@@ -139,6 +139,10 @@ input {
 .inputBox textarea:focus {
     border: 2px solid #000;
     border-radius: 8px;
+}
+
+.textarea-span {
+    top: -15px;
 }
 
 .enter {
