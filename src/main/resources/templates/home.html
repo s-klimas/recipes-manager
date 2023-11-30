@@ -111,16 +111,19 @@
             </div>
             <div class="row">
                 <div th:each="recipe: ${recipes}" class="col-md-3 recipe-column">
-                    <div class="recipe">
-                        <div class="recipe-inner h-100">
-                            <h3 th:text="${recipe.name}">Nazwa przepisu</h3>
-                            <ul>
-                                <li th:each="ingredient: ${recipe.ingredients}" th:text="${ingredient.name}">Składnik
-                                </li>
-                            </ul>
-                            <p th:text="${recipe.manual}">Opis przepisu</p>
+                    <a href="#" th:href="@{|/recipes/${recipe.id}|}">
+                        <div class="recipe">
+                            <div class="recipe-inner h-100">
+                                <h3 th:text="${recipe.name}">Nazwa przepisu</h3>
+                                <ul>
+                                    <li th:each="ingredient: ${recipe.ingredients}" th:text="${ingredient.name}">
+                                        Składnik
+                                    </li>
+                                </ul>
+                                <p th:text="${recipe.manual}">Opis przepisu</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

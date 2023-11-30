@@ -7,7 +7,6 @@ const editRecipe = document.querySelector(`.edit`);
 
 addIngredient.addEventListener(`click`, e => {
     e.preventDefault();
-    const addBtn = document.querySelector(`#submit`);
     const ingredients = document.querySelector(`#ingredients`);
 
     const divCol = document.createElement("div");
@@ -95,6 +94,9 @@ addIngredient.addEventListener(`click`, e => {
 
 deleteIngredient.addEventListener(`click`, e => {
     e.preventDefault();
+    if (count > 0) {
+        count--;
+    }
     ingredientsBox.removeChild(ingredientsBox.lastElementChild);
 })
 
