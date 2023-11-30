@@ -11,6 +11,9 @@
 <div class="container-fluid h-100">
     <div class="row h-100">
         <div id="left-column" class="col-md-5 col-sm-12 h-100">
+            <div class="header">
+                <h1><a href="#" th:href="@{/}">RM Home</a></h1>
+            </div>
             <div id="login-box">
                 <div class="container">
                     <form action="#" th:action="@{/register}" method="post" th:object="${user}">
@@ -29,6 +32,9 @@
                                 <span>Powtórz hasło</span>
                             </div>
                             <button class="enter" type="submit">Zarejestruj</button>
+                            <p class="links">
+                                <a>Masz już konto?</a> <a href="#" th:href="@{/login}">Zaloguj się</a><br>
+                            </p>
                         </div>
                     </form>
                 </div>

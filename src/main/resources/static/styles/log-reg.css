@@ -20,12 +20,32 @@ input {
 }
 
 #login-box {
-    margin-top: 100px;
+    margin-top: 50px;
     padding: 10px;
+    text-align: center;
 }
 
 #login-box > h1 {
     text-align: center;
+}
+
+.header > h1 {
+    text-align: center;
+}
+
+.header {
+    margin-top: 30px;
+    padding: 10px;
+}
+
+h1 > a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1 > a:hover {
+    color: inherit;
+    text-decoration:none;
 }
 
 .login {
