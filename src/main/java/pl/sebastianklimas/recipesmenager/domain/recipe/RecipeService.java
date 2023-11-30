@@ -67,4 +67,9 @@ public class RecipeService {
         }
         recipeRepository.save(recipe);
     }
+
+    @Transactional
+    public void deleteRecipeById(long id) throws ChangeSetPersister.NotFoundException {
+        recipeRepository.delete(recipeRepository.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new));
+    }
 }

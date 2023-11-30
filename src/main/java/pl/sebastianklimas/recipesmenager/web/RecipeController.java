@@ -3,10 +3,7 @@ package pl.sebastianklimas.recipesmenager.web;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientsListWrapperDto;
 import pl.sebastianklimas.recipesmenager.domain.recipe.RecipeService;
@@ -47,5 +44,11 @@ public class RecipeController {
             throw new RuntimeException(e);
         }
         return "redirect:/recipes/" + id;
+    }
+
+    @PostMapping("delete/{id}")
+    public String deleteRecipe(@PathVariable long id) throws ChangeSetPersister.NotFoundException {
+        recipeService.deleteRecipeById(id);
+        return "redirect:/";
     }
 }
