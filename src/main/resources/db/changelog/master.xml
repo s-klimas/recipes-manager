@@ -14,5 +14,4 @@
     <include file="../testdata/0001_users_and_roles.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/0002_recipes.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/0003_ingredients.sql" relativeToChangelogFile="true" context="dev"/>
-    <include file="../testdata/0004_password_recovery_token.sql" relativeToChangelogFile="true" context="dev"/>
 </databaseChangeLog>
