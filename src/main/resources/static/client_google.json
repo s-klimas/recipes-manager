@@ -1,0 +1,17 @@
+{
+  "web": {
+    "client_id": "861976607364-03nvn9guj0fceqs1r670gds1cf0fei8b.apps.googleusercontent.com",
+    "project_id": "sendingemails-406718",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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"
+  }
+},
+{
+  "client_id": "764086051850-6qr4p6gpi6hn506pt8ejuq83di341hur.apps.googleusercontent.com",
+  "client_secret": "d-FL95Q19q7MQmFpd7hHD0Ty",
+  "quota_project_id": "sendingemails-406718",
+  "refresh_token": "1//09txxpKCSQ2kFCgYIARAAGAkSNwF-L9Ircxvt9_Cc2TSm1OXBvDwG64sXcCDFD2_I1PINzz0l_IgLzkPq2Dczm2w9qzOASiC4Ie8",
+  "type": "authorized_user"
+}

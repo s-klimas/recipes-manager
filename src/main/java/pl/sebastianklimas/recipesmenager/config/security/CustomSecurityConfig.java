@@ -24,6 +24,8 @@ class CustomSecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/register")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/forget-password")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/recovery/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
                         .anyRequest().authenticated()
                 )
