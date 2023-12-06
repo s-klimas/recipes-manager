@@ -5,11 +5,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.sebastianklimas.recipesmenager.domain.passwordRecovery.PasswordRecoveryDto;
+import pl.sebastianklimas.recipesmenager.domain.passwordRecovery.PasswordRecoveryService;
+import pl.sebastianklimas.recipesmenager.domain.passwordRecovery.PasswordToken;
+import pl.sebastianklimas.recipesmenager.domain.passwordRecovery.PasswordTokenRepository;
+import pl.sebastianklimas.recipesmenager.domain.passwordRecovery.exceptions.TokenExpiredException;
+import pl.sebastianklimas.recipesmenager.domain.passwordRecovery.exceptions.TokenUsedException;
 import pl.sebastianklimas.recipesmenager.domain.user.dto.UserCredentialsDto;
 import pl.sebastianklimas.recipesmenager.domain.user.dto.UserIdentifyDto;
 import pl.sebastianklimas.recipesmenager.domain.user.dto.UserRegistrationDto;
 
 import javax.management.relation.RoleNotFoundException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +28,12 @@ class UserServiceTest {
     @Mock UserRepository userRepository;
     @Mock UserRoleRepository userRoleRepository;
     @Mock PasswordEncoder passwordEncoder;
+    @Mock
+    PasswordTokenRepository passwordTokenRepository;
+    @Mock
+    PasswordRecoveryService passwordTokenService;
+    @Mock
+    UserService userServiceMock;
 
     @InjectMocks
     private UserService userService;
@@ -29,7 +43,10 @@ class UserServiceTest {
         userRepository = mock(UserRepository.class);
         userRoleRepository = mock(UserRoleRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        userService = new UserService(userRepository, userRoleRepository, passwordEncoder);
+        passwordTokenRepository = mock(PasswordTokenRepository.class);
+        passwordTokenService = mock(PasswordRecoveryService.class);
+        userServiceMock = mock(UserService.class);
+        userService = new UserService(userRepository, userRoleRepository, passwordEncoder, passwordTokenRepository);
     }
 
     @Test
@@ -122,7 +139,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void testRegisterUserWithDefaultRole_WhenUserRepositoryThrowsException_ShouldThrowException() {
+    public void testingRegisterUserWithDefaultRole_WhenUserRepositoryThrowsException_ShouldThrowException() {
         // given
         UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
         userRegistrationDto.setEmail("test@example.com");
@@ -137,5 +154,68 @@ class UserServiceTest {
 
         // then
         assertThrows(RuntimeException.class, () -> userService.registerUserWithDefaultRole(userRegistrationDto));
+    }
+
+    @Test
+    public void testingValidateAndChange_WhenTokenIsValid_ShouldChangePassword() throws Exception {
+        // given
+        PasswordRecoveryDto passwordRecoveryDto = new PasswordRecoveryDto();
+        passwordRecoveryDto.setToken("validToken");
+        passwordRecoveryDto.setEmail("test@example.com");
+        passwordRecoveryDto.setPassword("newPassword");
+        PasswordToken mockToken = new PasswordToken();
+        mockToken.setUsed(false);
+        mockToken.setExpired(Timestamp.from(Instant.now().plusSeconds(3600)));
+        User mockUser = new User();
+        mockUser.setEmail(passwordRecoveryDto.getEmail());
+
+        // when
+        when(passwordTokenRepository.findByToken(passwordRecoveryDto.getToken())).thenReturn(Optional.of(mockToken));
+        when(userRepository.findByEmail(passwordRecoveryDto.getEmail())).thenReturn(Optional.of(mockUser));
+        when(userServiceMock.validateToken(mockToken)).thenReturn(true);
+
+        // then
+        userService.validateAndChangePassword(passwordRecoveryDto);
+        verify(passwordTokenRepository, times(1)).save(any(PasswordToken.class));
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void testingValidateAndChange_WhenTokenIsUsed_ShouldThrowTokenUsedException() {
+        // given
+        PasswordRecoveryDto passwordRecoveryDto = new PasswordRecoveryDto();
+        passwordRecoveryDto.setToken("usedToken");
+        passwordRecoveryDto.setEmail("test@example.com");
+        passwordRecoveryDto.setPassword("newPassword");
+        PasswordToken mockToken = new PasswordToken();
+        mockToken.setUsed(true);
+
+        // wwhen
+        when(passwordTokenRepository.findByToken(passwordRecoveryDto.getToken())).thenReturn(Optional.of(mockToken));
+
+        // then
+        assertThrows(TokenUsedException.class, () -> userService.validateAndChangePassword(passwordRecoveryDto));
+        verify(passwordTokenRepository, never()).save(any(PasswordToken.class));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    public void testingValidateAndChange_WhenTokenIsExpired_ShouldThrowTokenExpiredException() {
+        // given
+        PasswordRecoveryDto passwordRecoveryDto = new PasswordRecoveryDto();
+        passwordRecoveryDto.setToken("expiredToken");
+        passwordRecoveryDto.setEmail("test@example.com");
+        passwordRecoveryDto.setPassword("newPassword");
+        PasswordToken mockToken = new PasswordToken();
+        mockToken.setUsed(false);
+        mockToken.setExpired(Timestamp.from(Instant.now().minusSeconds(3600)));
+
+        // when
+        when(passwordTokenRepository.findByToken(passwordRecoveryDto.getToken())).thenReturn(Optional.of(mockToken));
+
+        // then
+        assertThrows(TokenExpiredException.class, () -> userService.validateAndChangePassword(passwordRecoveryDto));
+        verify(passwordTokenRepository, never()).save(any(PasswordToken.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 }

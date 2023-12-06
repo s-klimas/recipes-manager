@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>RM | Zaloguj</title>
+    <title>RM | Odzyskaj</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="../static/styles/log-reg-rec.css" rel="stylesheet" th:href="@{/styles/log-reg-rec.css}">
 </head>
@@ -15,32 +15,27 @@
             </div>
             <div id="login-box">
                 <div class="container">
-                    <form action="#" th:action="@{/login}" method="post">
+                    <form action="#" th:action="@{/recovery}" method="post" th:object="${prd}">
+                        <input hidden="hidden" name="token" value="" th:field="*{token}" th:value="*{token}">
+                        <input hidden="hidden" name="email" value="" th:field="*{email}" th:value="*{email}">
                         <div class="card">
-                            <a class="login">Logowanie</a>
+                            <a class="login">Odzyskanie hasła</a>
                             <div class="inputBox">
-                                <input autocomplete="off" id="username" name="username" type="text" required="required">
-                                <span class="user">Email</span>
+                                <input autocomplete="off" id="password" name="username" type="text" required="required" th:field="*{password}">
+                                <span class="user">Nowe hasło</span>
                             </div>
                             <div class="inputBox">
-                                <input autocomplete="off" id="password" name="password" type="password" required="required">
-                                <span>Hasło</span>
+                                <input autocomplete="off" id="repeat-password" name="username" type="text" required="required">
+                                <span class="user">Powtórz nowe hasło</span>
                             </div>
-                            <button class="enter">Zaloguj</button>
-                            <p class="links">
-                                <a>Nie masz jeszcze konta?</a> <a href="#" th:href="@{/register}">Zarejestruj się</a><br>
-                                <a>Nie pamiętasz hasła?</a> <a href="#" th:href="@{/forget-password}">Kliknij tutaj</a>
-                            </p>
+                            <button class="enter">Zresetuj hasło</button>
                         </div>
                     </form>
-                    <p th:if="${param.error}"
-                       th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
-                       class="mc-form-message"
-                    >
-                        Błąd logowania.
+                    <p th:if="${param.expired}">
+                        Token jest już przedawniony.
                     </p>
-                    <p th:if="${param.logout}">
-                        Zostałeś wylogowany, możesz zalogować się ponownie.
+                    <p th:if="${param.used}">
+                        Token jest niepoprawny.
                     </p>
                 </div>
             </div>
