@@ -13,12 +13,17 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public void getRecipe(@PathVariable int id) {
+    public void getRecipe(@PathVariable(name = "id") int id) {
+
+    }
+
+    @PutMapping("/{id}")
+    public void updateRecipe(@PathVariable(name = "id") int id, @RequestBody Recipe recipe) {
 
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteRecipe(@PathVariable int id) {
+    public void deleteRecipe(@PathVariable(name = "id") int id) {
 
     }
 }
