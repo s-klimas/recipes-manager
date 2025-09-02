@@ -4,5 +4,12 @@ spring:
       ddl-auto: validate
   liquibase:
     change-log: classpath:db/changelog/master.xml
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-5-nano
+          temperature: 1
 mail-trap:
   mail-from: mailtrap@sebastianklimas@op.pl
