@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import pl.sebastianklimas.recipesmenager.domain.recipe.RecipeService;
-import pl.sebastianklimas.recipesmenager.domain.recipe.dto.RecipeDto;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.RecipeServiceOld;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 import pl.sebastianklimas.recipesmenager.domain.user.UserService;
 import pl.sebastianklimas.recipesmenager.domain.user.dto.UserIdentifyDto;
 
@@ -17,9 +17,9 @@ import java.util.List;
 @Controller
 public class HomeController {
     private final UserService userService;
-    private final RecipeService recipeService;
+    private final RecipeServiceOld recipeService;
 
-    public HomeController(UserService userService, RecipeService recipeService) {
+    public HomeController(UserService userService, RecipeServiceOld recipeService) {
         this.userService = userService;
         this.recipeService = recipeService;
     }

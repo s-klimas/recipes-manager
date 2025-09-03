@@ -1,22 +1,32 @@
 package pl.sebastianklimas.recipesmenager.domain.ingredient;
 
 import jakarta.persistence.*;
-import pl.sebastianklimas.recipesmenager.domain.recipe.Recipe;
+import lombok.Getter;
+import lombok.Setter;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.Recipe;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "ingredient")
+@Table(name = "ingredients")
 public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "count")
     private int count;
+
+    @Column(name = "unit")
     private String unit;
 
     public Ingredient() {
@@ -29,43 +39,4 @@ public class Ingredient {
         this.unit = unit;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
 }

@@ -1,4 +1,4 @@
-package pl.sebastianklimas.recipesmenager.domain.recipe;
+package pl.sebastianklimas.recipesmenager.domain.recipeOld;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.Ingredient;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.IngredientRepository;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
-import pl.sebastianklimas.recipesmenager.domain.recipe.dto.RecipeDto;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 import pl.sebastianklimas.recipesmenager.domain.user.User;
 import pl.sebastianklimas.recipesmenager.domain.user.UserRepository;
 
@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RecipeService {
+public class RecipeServiceOld {
 
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final IngredientRepository ingredientRepository;
 
-    public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, IngredientRepository ingredientRepository) {
+    public RecipeServiceOld(RecipeRepository recipeRepository, UserRepository userRepository, IngredientRepository ingredientRepository) {
         this.recipeRepository = recipeRepository;
         this.userRepository = userRepository;
         this.ingredientRepository = ingredientRepository;

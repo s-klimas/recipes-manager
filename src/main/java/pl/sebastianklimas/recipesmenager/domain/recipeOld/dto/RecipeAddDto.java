@@ -1,4 +1,4 @@
-package pl.sebastianklimas.recipesmenager.domain.recipe.dto;
+package pl.sebastianklimas.recipesmenager.domain.recipeOld.dto;
 
 public class RecipeAddDto {
     private String name;

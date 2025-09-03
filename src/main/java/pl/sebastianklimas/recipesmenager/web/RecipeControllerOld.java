@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientsListWrapperDto;
-import pl.sebastianklimas.recipesmenager.domain.recipe.RecipeService;
-import pl.sebastianklimas.recipesmenager.domain.recipe.dto.RecipeDto;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.RecipeServiceOld;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/recipes")
-public class RecipeController {
+public class RecipeControllerOld {
 
-    private final RecipeService recipeService;
+    private final RecipeServiceOld recipeService;
 
-    public RecipeController(RecipeService recipeService) {
+    public RecipeControllerOld(RecipeServiceOld recipeService) {
         this.recipeService = recipeService;
     }
 

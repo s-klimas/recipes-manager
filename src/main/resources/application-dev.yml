@@ -1,11 +1,12 @@
 spring:
   datasource:
-    url: ${H2_URL}
-    username: ${H2_USERNAME}
-    password: ${H2_PASSWORD}
-    driverClassName: org.h2.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+#    url: ${H2_URL}
+#    username: ${H2_USERNAME}
+#    password: ${H2_PASSWORD}
+#    driverClassName: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/recipes_dev
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   liquibase:
     contexts: dev
     change-log: classpath:db/changelog/master.xml

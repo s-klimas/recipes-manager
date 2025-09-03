@@ -1,6 +1,6 @@
-package pl.sebastianklimas.recipesmenager.domain.recipe;
+package pl.sebastianklimas.recipesmenager.domain.recipeOld;
 
-import pl.sebastianklimas.recipesmenager.domain.recipe.dto.RecipeAddDto;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeAddDto;
 
 public class RecipeAddDtoMapper {
     static RecipeAddDto map(Recipe recipe) {

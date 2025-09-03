@@ -1,4 +1,4 @@
-package pl.sebastianklimas.recipesmenager.domain.recipe;
+package pl.sebastianklimas.recipesmenager.domain.recipeOld;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.Ingredient;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.IngredientRepository;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
-import pl.sebastianklimas.recipesmenager.domain.recipe.dto.RecipeDto;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 import pl.sebastianklimas.recipesmenager.domain.user.User;
 import pl.sebastianklimas.recipesmenager.domain.user.UserRepository;
 
@@ -28,14 +28,14 @@ class RecipeServiceTest {
     @Mock IngredientRepository ingredientRepository;
 
     @InjectMocks
-    RecipeService recipeService;
+    RecipeServiceOld recipeService;
 
     @BeforeEach
     public void init() {
         recipeRepository = mock(RecipeRepository.class);
         userRepository = mock(UserRepository.class);
         ingredientRepository = mock(IngredientRepository.class);
-        recipeService = new RecipeService(recipeRepository, userRepository, ingredientRepository);
+        recipeService = new RecipeServiceOld(recipeRepository, userRepository, ingredientRepository);
     }
 
     @Test

@@ -5,14 +5,19 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="2" author="sebastianklimas">
-        <createTable tableName="recipe">
+        <createTable tableName="recipes">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_recipes"/>
             </column>
-            <column name="user_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"
+                             foreignKeyName="fk_recipes_user_id"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                />
+            </column>
             <column name="name" type="VARCHAR(100)"/>
             <column name="manual" type="TEXT"/>
-<!--            <column name="short_description" type="TEXT"/>-->
         </createTable>
     </changeSet>
 </databaseChangeLog>

@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientsListWrapperDto;
-import pl.sebastianklimas.recipesmenager.domain.recipe.RecipeService;
-import pl.sebastianklimas.recipesmenager.domain.recipe.dto.RecipeAddDto;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.RecipeServiceOld;
+import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeAddDto;
 
 @Controller
 public class CreateRecipeController {
 
-    private final RecipeService recipeService;
+    private final RecipeServiceOld recipeService;
 
-    public CreateRecipeController(RecipeService recipeService) {
+    public CreateRecipeController(RecipeServiceOld recipeService) {
         this.recipeService = recipeService;
     }
 
