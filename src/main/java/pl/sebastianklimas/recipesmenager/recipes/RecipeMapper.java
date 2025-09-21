@@ -3,7 +3,7 @@ package pl.sebastianklimas.recipesmenager.recipes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.Recipe;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeDto;
 
 @Mapper(componentModel = "spring")
 public interface RecipeMapper {

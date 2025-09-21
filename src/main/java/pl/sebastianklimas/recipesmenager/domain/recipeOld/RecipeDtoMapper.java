@@ -3,6 +3,7 @@ package pl.sebastianklimas.recipesmenager.domain.recipeOld;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.IngredientDtoMapper;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
 import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
+import pl.sebastianklimas.recipesmenager.recipes.Recipe;
 
 import java.util.Set;
 import java.util.stream.Collectors;

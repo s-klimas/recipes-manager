@@ -1,4 +1,4 @@
-package pl.sebastianklimas.recipesmenager.recipes;
+package pl.sebastianklimas.recipesmenager.recipes.ingredients.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

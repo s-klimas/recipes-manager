@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.sebastianklimas.recipesmenager.domain.ingredient.Ingredient;
-import pl.sebastianklimas.recipesmenager.domain.ingredient.IngredientRepository;
+import pl.sebastianklimas.recipesmenager.recipes.ingredients.Ingredient;
+import pl.sebastianklimas.recipesmenager.recipes.ingredients.IngredientRepository;
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
 import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 import pl.sebastianklimas.recipesmenager.domain.user.User;
 import pl.sebastianklimas.recipesmenager.domain.user.UserRepository;
+import pl.sebastianklimas.recipesmenager.recipes.Recipe;
+import pl.sebastianklimas.recipesmenager.recipes.RecipeRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,8 @@ import static org.mockito.Mockito.*;
 
 class RecipeServiceTest {
 
-    @Mock RecipeRepository recipeRepository;
+    @Mock
+    RecipeRepository recipeRepository;
     @Mock UserRepository userRepository;
     @Mock IngredientRepository ingredientRepository;
 

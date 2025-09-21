@@ -1,10 +1,10 @@
-package pl.sebastianklimas.recipesmenager.domain.recipeOld;
+package pl.sebastianklimas.recipesmenager.recipes;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pl.sebastianklimas.recipesmenager.domain.ingredient.Ingredient;
 import pl.sebastianklimas.recipesmenager.domain.user.User;
+import pl.sebastianklimas.recipesmenager.recipes.ingredients.Ingredient;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +30,8 @@ public class Recipe {
     @Column(name = "MANUAL", columnDefinition = "text")
     private String manual;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe")
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe")
     private Set<Ingredient> ingredients = new HashSet<>();
 }
 

@@ -5,8 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.Recipe;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.RecipeRepository;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeDto;
 
 import javax.validation.Valid;
 import java.net.URI;

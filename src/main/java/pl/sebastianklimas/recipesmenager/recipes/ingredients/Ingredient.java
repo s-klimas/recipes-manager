@@ -1,9 +1,9 @@
-package pl.sebastianklimas.recipesmenager.domain.ingredient;
+package pl.sebastianklimas.recipesmenager.recipes.ingredients;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.Recipe;
+import pl.sebastianklimas.recipesmenager.recipes.Recipe;
 
 @Getter
 @Setter
@@ -38,5 +38,4 @@ public class Ingredient {
         this.count = count;
         this.unit = unit;
     }
-
 }

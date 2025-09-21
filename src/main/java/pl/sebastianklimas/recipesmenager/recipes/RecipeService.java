@@ -2,8 +2,7 @@ package pl.sebastianklimas.recipesmenager.recipes;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.Recipe;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.RecipeRepository;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeDto;
 
 import java.util.List;
 

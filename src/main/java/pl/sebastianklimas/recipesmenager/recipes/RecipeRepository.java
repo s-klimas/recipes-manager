@@ -1,4 +1,4 @@
-package pl.sebastianklimas.recipesmenager.domain.recipeOld;
+package pl.sebastianklimas.recipesmenager.recipes;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,8 @@
-package pl.sebastianklimas.recipesmenager.recipes;
+package pl.sebastianklimas.recipesmenager.recipes.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import pl.sebastianklimas.recipesmenager.recipes.ingredients.dtos.IngredientRequest;
 
 import java.util.HashSet;
 import java.util.Set;

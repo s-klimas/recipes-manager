@@ -1,6 +1,7 @@
 package pl.sebastianklimas.recipesmenager.domain.ingredient;
 
 import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
+import pl.sebastianklimas.recipesmenager.recipes.ingredients.Ingredient;
 
 public class IngredientDtoMapper {
     public static IngredientDto map(Ingredient ingredient) {

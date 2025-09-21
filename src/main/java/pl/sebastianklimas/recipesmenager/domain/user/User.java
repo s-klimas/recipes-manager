@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
-import pl.sebastianklimas.recipesmenager.domain.recipeOld.Recipe;
+import pl.sebastianklimas.recipesmenager.recipes.Recipe;
 
 import java.util.HashSet;
 import java.util.Set;
