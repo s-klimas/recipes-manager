@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> registerUser(
+    public ResponseEntity<RegisterUserResponseDto> registerUser(
             @Valid @RequestBody RegisterUserRequestDto requestDto,
             UriComponentsBuilder uriBuilder) {
         RegisterUserResponseDto userDto = userService.registerUser(requestDto);
