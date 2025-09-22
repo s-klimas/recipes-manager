@@ -1,8 +1,8 @@
 insert into
-    users (email, password)
+    users (email, login, status, password)
 values
-    ('admin@example.com', '{noop}adminpass'),
-    ('user@example.com', '{noop}userpass');
+    ('admin@example.com', 'admin', 'active', '{noop}adminpass'),
+    ('user@example.com', 'user', 'active', '{noop}userpass');
 
 insert into
     user_role (name, description)
