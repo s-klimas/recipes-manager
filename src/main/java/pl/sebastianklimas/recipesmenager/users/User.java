@@ -63,4 +63,8 @@ public class User {
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void addRole(UserRole role) {
+        roles.add(role);
+    }
 }

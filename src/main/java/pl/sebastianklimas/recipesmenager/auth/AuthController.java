@@ -20,11 +20,10 @@ public class AuthController {
     private final JwtConfig jwtConfig;
 
     @PostMapping("/login")
-    public JwtResponse login(
+    public ResponseEntity<JwtResponse> login(
             @Valid @RequestBody LoginRequestDto request,
             HttpServletResponse response
     ) {
-        System.out.println("Login request: " + request);
         var loginResult = authService.login(request);
 
         var refreshToken = loginResult.getRefreshToken().toString();
@@ -35,11 +34,8 @@ public class AuthController {
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        System.out.println("Ready to respond");
-
         var jwtResponse = new JwtResponse(loginResult.getAccessToken().toString());
-        return jwtResponse;
-//        return ResponseEntity.ok(jwtResponse);
+        return ResponseEntity.ok(jwtResponse);
     }
 
     @PostMapping("/refresh")
