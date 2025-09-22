@@ -24,6 +24,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         UserRole role = roleService.getRole(Role.USER.toString());
         user.addRole(role);
+        user.setStatus(Status.ACTIVE.toString());
         userRepository.save(user);
 
         return userMapper.toDto(user);
