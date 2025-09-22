@@ -7,7 +7,7 @@
     <changeSet id="3" author="sebastianklimas">
         <createTable tableName="ingredients">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_ingredients"/>
+                <constraints primaryKey="true" primaryKeyName="pk_ingredients"/>
             </column>
             <column name="recipe_id" type="BIGINT">
                 <constraints nullable="false"
@@ -19,6 +19,8 @@
             <column name="name" type="VARCHAR(100)"/>
             <column name="count" type="INT"/>
             <column name="unit" type="VARCHAR(20)"/>
+            <column name="created_at" type="timestamptz"/>
+            <column name="updated_at" type="timestamptz"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>
