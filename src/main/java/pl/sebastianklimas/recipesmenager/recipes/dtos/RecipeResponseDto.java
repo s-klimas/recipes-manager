@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class RecipeDto {
+public class RecipeResponseDto {
     @NotNull
     private Long id;
     @NotBlank(message = "Name is required")
     private String name;
-    @NotBlank(message = "Manual is required")
-    private String manual;
+    @NotBlank(message = "Instructions are required")
+    private String instructions;
     private Set<IngredientDto> ingredients = new HashSet<>();
 }

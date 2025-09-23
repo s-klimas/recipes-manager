@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeDto;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -18,32 +19,32 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping
-    public List<RecipeDto> getAllRecipes() {
+    public List<RecipeResponseDto> getAllRecipes() {
         return recipeService.getAllRecipes();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RecipeDto> getRecipe(@PathVariable(name = "id") Long id) {
-        RecipeDto recipeById = recipeService.getRecipeById(id);
+    public ResponseEntity<RecipeResponseDto> getRecipe(@PathVariable(name = "id") Long id) {
+        RecipeResponseDto recipeById = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipeById);
     }
 
     @PostMapping
-    public ResponseEntity<RecipeDto> createRecipe(
-            @Valid @RequestBody RecipeDto recipeDto,
+    public ResponseEntity<RecipeResponseDto> createRecipe(
+            @Valid @RequestBody RecipeRequestDto recipeDto,
             UriComponentsBuilder uriBuilder) {
 
-        RecipeDto recipe = recipeService.createRecipe(recipeDto);
+        RecipeResponseDto recipe = recipeService.createRecipe(recipeDto);
 
         URI uri = uriBuilder.path("/recipes/{id}").buildAndExpand(recipe.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(recipeDto);
+        return ResponseEntity.created(uri).body(recipe);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecipeDto> updateRecipe(
+    public ResponseEntity<RecipeResponseDto> updateRecipe(
             @PathVariable(name = "id") Long id,
-            @Valid @RequestBody RecipeDto recipeDto) {
+            @Valid @RequestBody RecipeRequestDto recipeDto) {
         return ResponseEntity.ok(recipeService.updateRecipe(id, recipeDto));
     }
 

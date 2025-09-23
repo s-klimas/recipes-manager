@@ -1,9 +1,5 @@
 spring:
   datasource:
-#    url: ${H2_URL}
-#    username: ${H2_USERNAME}
-#    password: ${H2_PASSWORD}
-#    driverClassName: org.h2.Driver
     url: jdbc:postgresql://localhost:5432/recipes_dev
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}

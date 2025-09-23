@@ -2,7 +2,8 @@ package pl.sebastianklimas.recipesmenager.recipes;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeDto;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
 
 import java.util.List;
 
@@ -12,34 +13,32 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final RecipeRepository recipeRepository;
 
-    public RecipeDto createRecipe(RecipeDto recipeDto) {
+    public RecipeResponseDto createRecipe(RecipeRequestDto recipeDto) {
         Recipe recipe = recipeMapper.toEntity(recipeDto);
+        recipe.setVisibility(Visibility.PRIVATE.toString());
         recipeRepository.save(recipe);
-        recipeDto.setId(recipe.getId());
 
-        return recipeDto;
+        return recipeMapper.toDto(recipe);
     }
 
-    public List<RecipeDto> getAllRecipes() {
+    public List<RecipeResponseDto> getAllRecipes() {
         return recipeRepository.findAll().stream()
                 .map(recipeMapper::toDto)
                 .toList();
     }
 
-    public RecipeDto getRecipeById(Long id) {
+    public RecipeResponseDto getRecipeById(Long id) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow(() -> new RecipeNotFoundException("Recipe not found"));
         return recipeMapper.toDto(recipe);
     }
 
-    public RecipeDto updateRecipe(Long id, RecipeDto recipeDto) {
+    public RecipeResponseDto updateRecipe(Long id, RecipeRequestDto recipeDto) {
         Recipe recipe =  recipeRepository.findById(id).orElseThrow(() -> new RecipeNotFoundException("Recipe not found"));
 
         recipeMapper.update(recipeDto, recipe);
         recipeRepository.save(recipe);
 
-        recipeDto.setId(recipe.getId());
-
-        return recipeDto;
+        return recipeMapper.toDto(recipe);
     }
 
     public void deleteRecipe(Long id) {

@@ -22,9 +22,11 @@ public class UserService {
 
         User user = userMapper.toEntity(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        user.setStatus(Status.ACTIVE.toString());
+
         UserRole role = roleService.getRole(Role.USER.toString());
         user.addRole(role);
-        user.setStatus(Status.ACTIVE.toString());
+
         userRepository.save(user);
 
         return userMapper.toDto(user);

@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: recipe-manager
   jpa:
     hibernate:
       ddl-auto: validate
@@ -11,5 +13,10 @@ spring:
         options:
           model: gpt-5-nano
           temperature: 1
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpiration: 900 # 15m
+    refreshTokenExpiration: 604800 # 7d
+    domain: ${JWT_DOMAIN}
 mail-trap:
   mail-from: mailtrap@sebastianklimas@op.pl

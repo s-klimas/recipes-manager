@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class RecipeRequest {
+public class RecipeRequestDto {
     @NotBlank(message = "Name is required")
     private String name;
     @NotBlank(message = "Manual is required")

@@ -3,12 +3,13 @@ package pl.sebastianklimas.recipesmenager.recipes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeDto;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
+import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
 
 @Mapper(componentModel = "spring")
 public interface RecipeMapper {
-    RecipeDto toDto(Recipe recipe);
-    Recipe toEntity(RecipeDto recipeDto);
+    RecipeResponseDto toDto(Recipe recipe);
+    Recipe toEntity(RecipeRequestDto recipeDto);
     @Mapping(target = "id", ignore = true)
-    void update(RecipeDto recipeDto, @MappingTarget Recipe recipe);
+    void update(RecipeRequestDto recipeDto, @MappingTarget Recipe recipe);
 }
