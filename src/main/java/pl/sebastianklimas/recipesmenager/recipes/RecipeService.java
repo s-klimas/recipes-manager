@@ -7,7 +7,6 @@ import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
 import pl.sebastianklimas.recipesmenager.recipes.exceptions.RecipeNotAvailableForCurrentUserException;
 import pl.sebastianklimas.recipesmenager.recipes.exceptions.RecipeNotFoundException;
-import pl.sebastianklimas.recipesmenager.recipes.ingredients.Ingredient;
 import pl.sebastianklimas.recipesmenager.recipes.ingredients.IngredientMapper;
 import pl.sebastianklimas.recipesmenager.users.User;
 

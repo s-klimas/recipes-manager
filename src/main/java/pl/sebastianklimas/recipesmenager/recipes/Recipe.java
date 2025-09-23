@@ -6,7 +6,6 @@ import lombok.Setter;
 import pl.sebastianklimas.recipesmenager.recipes.ingredients.Ingredient;
 import pl.sebastianklimas.recipesmenager.users.User;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;

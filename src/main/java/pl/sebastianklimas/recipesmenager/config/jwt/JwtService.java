@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
-import org.antlr.runtime.Token;
 import org.springframework.stereotype.Service;
 import pl.sebastianklimas.recipesmenager.users.User;
 

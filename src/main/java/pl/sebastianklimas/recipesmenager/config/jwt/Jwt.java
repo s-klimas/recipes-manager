@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import pl.sebastianklimas.recipesmenager.users.Role;
 
 import javax.crypto.SecretKey;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
