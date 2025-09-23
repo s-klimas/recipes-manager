@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Jwt {
     private final Claims claims;
@@ -27,11 +28,17 @@ public class Jwt {
     }
 
     public List<Role> getRoles() {
-        String[] rolesArray = claims.get("roles", String[].class);
+        Object raw = claims.get("roles");
 
-        return Arrays.stream(rolesArray)
-                .map(role -> Role.valueOf(role.toUpperCase()))
-                .toList();
+        if (raw instanceof List<?> rawList) {
+            return rawList.stream()
+                    .filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .map(s -> Role.valueOf(s.toUpperCase()))
+                    .toList();
+        }
+
+        return List.of();
     }
 
     public String toString() {

@@ -28,7 +28,7 @@ public class JwtService {
                 .subject(user.getId().toString())
                 .add("email", user.getEmail())
                 .add("login", user.getLogin())
-                .add("roles", user.getRoles())
+                .add("roles", user.getRolesNames())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000L * tokenExpiration))
                 .build();

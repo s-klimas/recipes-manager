@@ -67,4 +67,10 @@ public class User {
     public void addRole(UserRole role) {
         roles.add(role);
     }
+
+    public List<String> getRolesNames() {
+        return roles.stream()
+                .map(UserRole::getName)
+                .toList();
+    }
 }
