@@ -1,6 +1,6 @@
 package pl.sebastianklimas.recipesmenager.domain.recipeOld.dto;
 
-import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
+import pl.sebastianklimas.recipesmenager.recipes.ingredients.dtos.IngredientResponseDto;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,12 +9,12 @@ public class RecipeDto {
     private long id;
     private String name;
     private String manual;
-    private Set<IngredientDto> ingredients = new HashSet<>();
+    private Set<IngredientResponseDto> ingredients = new HashSet<>();
 
     public RecipeDto() {
     }
 
-    public RecipeDto(long id, String name, String manual, Set<IngredientDto> ingredients) {
+    public RecipeDto(long id, String name, String manual, Set<IngredientResponseDto> ingredients) {
         this.id = id;
         this.name = name;
         this.manual = manual;
@@ -45,11 +45,11 @@ public class RecipeDto {
         this.manual = manual;
     }
 
-    public Set<IngredientDto> getIngredients() {
+    public Set<IngredientResponseDto> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Set<IngredientDto> ingredients) {
+    public void setIngredients(Set<IngredientResponseDto> ingredients) {
         this.ingredients = ingredients;
     }
 }

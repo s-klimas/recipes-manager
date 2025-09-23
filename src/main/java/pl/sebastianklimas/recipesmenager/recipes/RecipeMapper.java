@@ -9,7 +9,9 @@ import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
 @Mapper(componentModel = "spring")
 public interface RecipeMapper {
     RecipeResponseDto toDto(Recipe recipe);
+    @Mapping(target = "instructions", source = "instructions")
     Recipe toEntity(RecipeRequestDto recipeDto);
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "instructions", source = "instructions")
     void update(RecipeRequestDto recipeDto, @MappingTarget Recipe recipe);
 }

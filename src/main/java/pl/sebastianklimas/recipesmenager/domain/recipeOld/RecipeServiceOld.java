@@ -6,7 +6,7 @@
 //import org.springframework.stereotype.Service;
 //import pl.sebastianklimas.recipesmenager.recipes.ingredients.Ingredient;
 //import pl.sebastianklimas.recipesmenager.recipes.ingredients.IngredientRepository;
-//import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
+//import pl.sebastianklimas.recipesmenager.recipes.ingredients.dtos.IngredientDto;
 //import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 //import pl.sebastianklimas.recipesmenager.domain.user.User;
 //import pl.sebastianklimas.recipesmenager.domain.user.UserRepository;

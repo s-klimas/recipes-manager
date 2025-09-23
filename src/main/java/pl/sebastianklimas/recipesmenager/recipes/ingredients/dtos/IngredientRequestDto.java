@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class IngredientRequest {
+public class IngredientRequestDto {
     @NotBlank
     private String name;
     private int count;

@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
+import pl.sebastianklimas.recipesmenager.recipes.exceptions.RecipeNotAvailableForCurrentUserException;
+import pl.sebastianklimas.recipesmenager.recipes.exceptions.RecipeNotFoundException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -58,5 +60,10 @@ public class RecipeController {
     @ExceptionHandler(RecipeNotFoundException.class)
     public ResponseEntity<String> handleRecipeNotFoundException(RecipeNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(RecipeNotAvailableForCurrentUserException.class)
+    public ResponseEntity<String> handleRecipeNotAvailableForCurrentUserException(RecipeNotAvailableForCurrentUserException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 }

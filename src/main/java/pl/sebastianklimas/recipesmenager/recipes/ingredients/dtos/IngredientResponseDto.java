@@ -1,18 +1,18 @@
-package pl.sebastianklimas.recipesmenager.domain.ingredient.dto;
+package pl.sebastianklimas.recipesmenager.recipes.ingredients.dtos;
 
 import lombok.Data;
 
 @Data
-public class IngredientDto {
+public class IngredientResponseDto {
     private long id;
     private String name;
     private int count;
     private String unit;
 
-    public IngredientDto() {
+    public IngredientResponseDto() {
     }
 
-    public IngredientDto(long id, String name, int count, String unit) {
+    public IngredientResponseDto(long id, String name, int count, String unit) {
         this.id = id;
         this.name = name;
         this.count = count;

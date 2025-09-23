@@ -58,4 +58,9 @@ public class Ingredient {
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    @Override
+    public String toString() {
+        return name + " " + count + " " + unit;
+    }
 }

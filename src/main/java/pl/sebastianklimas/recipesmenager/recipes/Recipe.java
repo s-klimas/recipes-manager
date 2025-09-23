@@ -42,7 +42,7 @@ public class Recipe {
     private LocalDateTime updatedAt;
 
 //    @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe")
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @PrePersist
@@ -55,6 +55,15 @@ public class Recipe {
     @PreUpdate
     public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return name + " " + instructions + " "  + visibility + " " + ingredients.toString();
+    }
+
+    public void addIngredient(Ingredient ingredient) {
+        ingredients.add(ingredient);
     }
 }
 

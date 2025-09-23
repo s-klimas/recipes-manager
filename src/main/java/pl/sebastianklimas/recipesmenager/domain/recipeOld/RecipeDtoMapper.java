@@ -1,7 +1,7 @@
 //package pl.sebastianklimas.recipesmenager.domain.recipeOld;
 //
 //import pl.sebastianklimas.recipesmenager.domain.ingredient.IngredientDtoMapper;
-//import pl.sebastianklimas.recipesmenager.domain.ingredient.dto.IngredientDto;
+//import pl.sebastianklimas.recipesmenager.recipes.ingredients.dtos.IngredientDto;
 //import pl.sebastianklimas.recipesmenager.domain.recipeOld.dto.RecipeDto;
 //import pl.sebastianklimas.recipesmenager.recipes.Recipe;
 //

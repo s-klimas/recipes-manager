@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.sebastianklimas.recipesmenager.auth.dto.LoginRequestDto;
 import pl.sebastianklimas.recipesmenager.auth.dto.LoginResponseDto;
 import pl.sebastianklimas.recipesmenager.config.jwt.Jwt;
 import pl.sebastianklimas.recipesmenager.config.jwt.JwtService;
+import pl.sebastianklimas.recipesmenager.users.User;
 import pl.sebastianklimas.recipesmenager.users.UserRepository;
 
 @AllArgsConstructor
@@ -42,5 +44,12 @@ public class AuthService {
 
         var user = userRepository.findById(jwt.getUserId()).orElseThrow();
         return jwtService.generateAccessToken(user);
+    }
+
+    public User getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userId = (Long) authentication.getPrincipal();
+
+        return userRepository.findById(userId).orElse(null);
     }
 }
