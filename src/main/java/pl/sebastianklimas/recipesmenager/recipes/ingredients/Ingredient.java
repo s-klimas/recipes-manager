@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.sebastianklimas.recipesmenager.recipes.Recipe;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,7 +27,7 @@ public class Ingredient {
     private String name;
 
     @Column(name = "count")
-    private int count;
+    private BigDecimal count;
 
     @Column(name = "unit")
     private String unit;
@@ -38,13 +39,6 @@ public class Ingredient {
     private LocalDateTime updatedAt;
 
     public Ingredient() {
-    }
-
-    public Ingredient(Recipe recipe, String name, int count, String unit) {
-        this.recipe = recipe;
-        this.name = name;
-        this.count = count;
-        this.unit = unit;
     }
 
     @PrePersist
@@ -61,6 +55,6 @@ public class Ingredient {
 
     @Override
     public String toString() {
-        return name + " " + count + " " + unit;
+        return name + " " + count.toString() + " " + unit;
     }
 }
