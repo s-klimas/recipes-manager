@@ -17,7 +17,7 @@
                 />
             </column>
             <column name="name" type="VARCHAR(100)"/>
-            <column name="count" type="INT"/>
+            <column name="count" type="DECIMAL"/>
             <column name="unit" type="VARCHAR(20)"/>
             <column name="created_at" type="timestamptz"/>
             <column name="updated_at" type="timestamptz"/>

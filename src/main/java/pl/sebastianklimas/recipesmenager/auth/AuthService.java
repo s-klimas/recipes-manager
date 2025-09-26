@@ -49,6 +49,7 @@ public class AuthService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = (Long) authentication.getPrincipal();
 
+        // TODO change to userService
         return userRepository.findById(userId).orElse(null);
     }
 }
