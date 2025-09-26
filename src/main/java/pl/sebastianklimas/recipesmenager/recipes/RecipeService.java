@@ -7,7 +7,6 @@ import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
 import pl.sebastianklimas.recipesmenager.recipes.exceptions.RecipeNotAvailableForCurrentUserException;
 import pl.sebastianklimas.recipesmenager.recipes.exceptions.RecipeNotFoundException;
-import pl.sebastianklimas.recipesmenager.recipes.ingredients.IngredientMapper;
 import pl.sebastianklimas.recipesmenager.users.User;
 
 import java.util.List;
@@ -18,7 +17,6 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final RecipeRepository recipeRepository;
     private final AuthService authService;
-    private final IngredientMapper ingredientMapper;
 
     public RecipeResponseDto createRecipe(RecipeRequestDto recipeDto) {
         User currentUser = authService.getCurrentUser();
