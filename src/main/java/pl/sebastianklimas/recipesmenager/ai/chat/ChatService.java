@@ -42,18 +42,18 @@ public class ChatService {
         this.imageService = imageService;
     }
 
-    public Flux<String> chat(String message) {
+    public String chat(String message) {
         return chatClient.prompt()
                 .tools(recipeTools)
                 .user(message)
-                .stream()
+                .call()
                 .content();
     }
 
-    public Flux<String> assist(String message) {
+    public String assist(String message) {
         return chatClient.prompt()
                 .user(message)
-                .stream()
+                .call()
                 .content();
     }
 
