@@ -1,5 +1,8 @@
 package pl.sebastianklimas.recipesmenager.ai.chat;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,22 +16,37 @@ import java.io.InputStream;
 @RestController
 @RequestMapping("/ai")
 @AllArgsConstructor
+@Tag(name = "AI Logic")
 public class ChatController {
     private final ChatService chatService;
 
 
     @GetMapping("/chat")
-    public Flux<String> chat(@RequestBody String message) {
+    @Operation(summary = "Sends user message to LLM (only for logged in users - allows AI tools to operate on database).")
+    public Flux<String> chat(
+            @Parameter(description = "Users message.")
+            @RequestBody String message
+    ) {
         return chatService.chat(message);
     }
 
     @GetMapping("/assist")
-    public Flux<String> assist(@RequestBody String message) {
+    @Operation(summary = "Sends users message to LLM (for non logged users).")
+    public Flux<String> assist(
+            @Parameter(description = "Users message.")
+            @RequestBody String message
+    ) {
         return chatService.assist(message);
     }
 
     @PostMapping("/image-to-recipe")
-    public ResponseEntity<String> imageToRecipe(@RequestParam("file") MultipartFile file, @RequestParam("message") String message) {
+    @Operation(summary = "Allows to send an image of the recipe with a message to LLM (only for logged in users - allows AI tools to operate on database).")
+    public ResponseEntity<String> imageToRecipe(
+            @Parameter(description = "Image od the recipe.")
+            @RequestParam("file") MultipartFile file,
+            @Parameter(description = "Users message.")
+            @RequestParam("message") String message
+    ) {
         try (InputStream inputStream = file.getInputStream()) {
             var response = chatService.imageToRecipe(inputStream, file.getContentType(), message);
             return ResponseEntity.ok(response);

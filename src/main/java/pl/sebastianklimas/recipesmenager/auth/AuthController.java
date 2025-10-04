@@ -1,26 +1,33 @@
 package pl.sebastianklimas.recipesmenager.auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import pl.sebastianklimas.recipesmenager.auth.dto.LoginRequestDto;
 import pl.sebastianklimas.recipesmenager.config.jwt.JwtConfig;
-import pl.sebastianklimas.recipesmenager.config.jwt.JwtResponse;
+import pl.sebastianklimas.recipesmenager.config.jwt.JwtResponseDto;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Auth")
 public class AuthController {
     private final AuthService authService;
     private final JwtConfig jwtConfig;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> login(
+    @Operation(summary = "Allows to log in.")
+    public ResponseEntity<JwtResponseDto> login(
+            @Parameter(description = "User's data to login.")
             @Valid @RequestBody LoginRequestDto request,
             HttpServletResponse response
     ) {
@@ -34,14 +41,18 @@ public class AuthController {
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        var jwtResponse = new JwtResponse(loginResult.getAccessToken().toString());
+        var jwtResponse = new JwtResponseDto(loginResult.getAccessToken().toString());
         return ResponseEntity.ok(jwtResponse);
     }
 
     @PostMapping("/refresh")
-    public JwtResponse refresh(@CookieValue(value = "refreshToken") String refreshToken) {
+    @Operation(summary = "Allows to get a new token from refresh token.")
+    public JwtResponseDto refresh(
+            @Parameter(description = "The refresh token.")
+            @CookieValue(value = "refreshToken") String refreshToken
+    ) {
         var accessToken = authService.refreshAccessToken(refreshToken);
-        return new JwtResponse(accessToken.toString());
+        return new JwtResponseDto(accessToken.toString());
     }
 
     @ExceptionHandler(BadCredentialsException.class)

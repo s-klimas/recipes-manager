@@ -1,5 +1,8 @@
 package pl.sebastianklimas.recipesmenager.users;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,11 +20,14 @@ import pl.sebastianklimas.recipesmenager.users.exceptions.UserNotFoundException;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/users")
+@Tag(name = "Users")
 public class UserController {
     private final UserService userService;
 
     @PostMapping
+    @Operation(summary = "Registers a user.")
     public ResponseEntity<RegisterUserResponseDto> registerUser(
+            @Parameter(description = "The new users data.")
             @Valid @RequestBody RegisterUserRequestDto requestDto,
             UriComponentsBuilder uriBuilder) {
         RegisterUserResponseDto userDto = userService.registerUser(requestDto);
@@ -30,18 +36,29 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    @Operation(summary = "Get the user by ID.")
+    public ResponseEntity<UserDto> getUser(
+            @Parameter(description = "The ID of the user.")
+            @PathVariable Long id
+    ) {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    @Operation(summary = "Deletes the users.")
+    public void deleteUser(
+            @Parameter(description = "The ID of the user.")
+            @PathVariable Long id
+    ) {
         userService.deleteUser(id);
     }
 
     @PostMapping("/{id}/change-password")
+    @Operation(summary = "Change password for user.")
     public void changePassword(
+            @Parameter(description = "The ID of the user.")
             @PathVariable Long id,
+            @Parameter(description = "The old and new password.")
             @RequestBody ChangePasswordRequestDto request) {
         userService.changePassword(id, request);
     }
