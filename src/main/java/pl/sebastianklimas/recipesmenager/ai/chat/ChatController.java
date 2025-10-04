@@ -18,12 +18,12 @@ public class ChatController {
 
 
     @GetMapping("/chat")
-    public Flux<String> chat(@RequestBody String message) {
+    public String chat(@RequestBody String message) {
         return chatService.chat(message);
     }
 
     @GetMapping("/assist")
-    public Flux<String> assist(@RequestBody String message) {
+    public String assist(@RequestBody String message) {
         return chatService.assist(message);
     }
 
