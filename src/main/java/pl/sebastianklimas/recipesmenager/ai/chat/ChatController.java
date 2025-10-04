@@ -23,7 +23,7 @@ public class ChatController {
 
     @GetMapping("/chat")
     @Operation(summary = "Sends user message to LLM (only for logged in users - allows AI tools to operate on database).")
-    public Flux<String> chat(
+    public String chat(
             @Parameter(description = "Users message.")
             @RequestBody String message
     ) {
@@ -32,7 +32,7 @@ public class ChatController {
 
     @GetMapping("/assist")
     @Operation(summary = "Sends users message to LLM (for non logged users).")
-    public Flux<String> assist(
+    public String assist(
             @Parameter(description = "Users message.")
             @RequestBody String message
     ) {
