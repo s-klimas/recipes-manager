@@ -38,16 +38,15 @@ public class UserService {
     }
 
     public UserDto getUser(Long id) {
-        return userMapper.toUserDto(userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found.")));
+        return userMapper.toUserDto(findUserById(id));
     }
 
     public void deleteUser(Long userId) {
-        var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " not found."));
-        userRepository.delete(user);
+        userRepository.delete(findUserById(userId));
     }
 
     public void changePassword(Long userId, ChangePasswordRequestDto request) {
-        var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " not found."));
+        var user =findUserById(userId);
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new AccessDeniedException("Password does not match");
@@ -55,5 +54,13 @@ public class UserService {
 
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
+    }
+
+    public User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found."));
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found."));
     }
 }
