@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 import pl.sebastianklimas.recipesmenager.ai.image.ImageService;
 import pl.sebastianklimas.recipesmenager.ai.tools.RecipeTools;
-import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.io.InputStream;

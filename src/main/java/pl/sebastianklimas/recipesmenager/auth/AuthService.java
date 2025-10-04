@@ -11,14 +11,14 @@ import pl.sebastianklimas.recipesmenager.auth.dto.LoginResponseDto;
 import pl.sebastianklimas.recipesmenager.config.jwt.Jwt;
 import pl.sebastianklimas.recipesmenager.config.jwt.JwtService;
 import pl.sebastianklimas.recipesmenager.users.User;
-import pl.sebastianklimas.recipesmenager.users.UserRepository;
+import pl.sebastianklimas.recipesmenager.users.UserService;
 
 @AllArgsConstructor
 @Service
 public class AuthService {
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final UserService userService;
 
     public LoginResponseDto login(LoginRequestDto request) {
         authenticationManager.authenticate(
@@ -28,7 +28,7 @@ public class AuthService {
                 )
         );
 
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        var user = userService.findUserByEmail(request.getEmail());
         var accessToken = jwtService.generateAccessToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
@@ -41,7 +41,7 @@ public class AuthService {
             throw new BadCredentialsException("Invalid refresh token");
         }
 
-        var user = userRepository.findById(jwt.getUserId()).orElseThrow();
+        var user = userService.findUserById(jwt.getUserId());
         return jwtService.generateAccessToken(user);
     }
 
@@ -49,7 +49,6 @@ public class AuthService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         var userId = (Long) authentication.getPrincipal();
 
-        // TODO change to userService
-        return userRepository.findById(userId).orElse(null);
+        return userService.findUserById(userId);
     }
 }
