@@ -1,10 +1,11 @@
 package pl.sebastianklimas.recipesmenager.recipes;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,26 +20,27 @@ import pl.sebastianklimas.recipesmenager.users.User;
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@DisplayName("RecipeService Unit Tests")
 class RecipeServiceTest {
-    @Mock
-    private AuthService authService;
-    @Mock
-    private RecipeRepository recipeRepository;
-    @Mock
-    private RecipeMapper recipeMapper;
 
-    @InjectMocks
-    private RecipeService recipeService;
+    @Mock private AuthService authService;
+    @Mock private RecipeRepository recipeRepository;
+    @Mock private RecipeMapper recipeMapper;
+
+    @InjectMocks private RecipeService recipeService;
+
+    @Captor
+    private ArgumentCaptor<Recipe> recipeCaptor;
 
     private RecipeRequestDto recipeRequestDto;
-    private Recipe recipeEntity;
     private RecipeResponseDto recipeResponseDto;
+    private Recipe recipeEntity;
     private User currentUser;
     private User anotherUser;
     private Recipe recipeUserPrivate;
@@ -46,360 +48,345 @@ class RecipeServiceTest {
     private Recipe recipeOtherPrivate;
     private Recipe recipeOtherPublic;
     private Recipe recipe;
+    private Recipe anotherRecipe;
 
     @BeforeEach
     void setUp() {
+        currentUser = new User();
+        anotherUser = new User();
+
+        recipeUserPrivate = createRecipe(currentUser, Visibility.PRIVATE);
+        recipeUserPublic = createRecipe(currentUser, Visibility.PUBLIC);
+        recipeOtherPrivate = createRecipe(anotherUser, Visibility.PRIVATE);
+        recipeOtherPublic = createRecipe(anotherUser, Visibility.PUBLIC);
+
+        recipe = createRecipe(currentUser, Visibility.PRIVATE);
+        anotherRecipe = createRecipe(anotherUser, Visibility.PRIVATE);
+
+        recipeEntity = createRecipe(currentUser, Visibility.PRIVATE);
+        recipeEntity.setIngredients(Set.of(new Ingredient(), new Ingredient()));
+
         recipeRequestDto = new RecipeRequestDto();
         recipeResponseDto = new RecipeResponseDto();
-        currentUser = new User();
-
-        Ingredient ing1 = new Ingredient();
-        Ingredient ing2 = new Ingredient();
-        recipeEntity = new Recipe();
-        recipeEntity.setIngredients(Set.of(ing1, ing2));
-
-        recipeUserPrivate = new Recipe();
-        recipeUserPrivate.setUser(currentUser);
-        recipeUserPrivate.setVisibility(Visibility.PRIVATE.toString());
-
-        recipeUserPublic = new Recipe();
-        recipeUserPublic.setUser(currentUser);
-        recipeUserPublic.setVisibility(Visibility.PUBLIC.toString());
-
-        recipeOtherPrivate = new Recipe();
-        recipeOtherPrivate.setUser(anotherUser);
-        recipeOtherPrivate.setVisibility(Visibility.PRIVATE.toString());
-
-        recipeOtherPublic = new Recipe();
-        recipeOtherPublic.setUser(anotherUser);
-        recipeOtherPublic.setVisibility(Visibility.PUBLIC.toString());
-
-        recipe = new Recipe();
-        recipe.setUser(currentUser);
-        recipe.setVisibility(Visibility.PRIVATE.toString());
-
-        recipeResponseDto = new RecipeResponseDto();
     }
 
-    @Test
-    void shouldCreateRecipe() {
-        // given
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toEntity(recipeRequestDto)).thenReturn(recipeEntity);
-        when(recipeMapper.toDto(recipeEntity)).thenReturn(recipeResponseDto);
-        when(recipeRepository.save(any(Recipe.class))).thenReturn(recipeEntity);
-
-        // when
-        RecipeResponseDto result = recipeService.createRecipe(recipeRequestDto);
-
-        // then
-        assertThat(result).isEqualTo(recipeResponseDto);
-
-        verify(authService).getCurrentUser();
-        verify(recipeMapper).toEntity(recipeRequestDto);
-        verify(recipeRepository).save(recipeEntity);
-        verify(recipeMapper).toDto(recipeEntity);
-
-        assertThat(recipeEntity.getVisibility()).isEqualTo(Visibility.PRIVATE.toString());
-        assertThat(recipeEntity.getUser()).isEqualTo(currentUser);
-        recipeEntity.getIngredients().forEach(
-                ing -> assertThat(ing.getRecipe()).isEqualTo(recipeEntity)
-        );
+    private Recipe createRecipe(User user, Visibility visibility) {
+        Recipe recipe = new Recipe();
+        recipe.setUser(user);
+        recipe.setVisibility(visibility.toString());
+        return recipe;
     }
 
-    @Test
-    void shouldPassCorrectRecipeToRepository() {
-        // given
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toEntity(recipeRequestDto)).thenReturn(recipeEntity);
-        when(recipeMapper.toDto(any())).thenReturn(recipeResponseDto);
+    // ============================================================
+    // CREATE
+    // ============================================================
 
-        ArgumentCaptor<Recipe> captor = ArgumentCaptor.forClass(Recipe.class);
+    @Nested
+    @DisplayName("Create Recipe")
+    class CreateRecipeTests {
 
-        // when
-        recipeService.createRecipe(recipeRequestDto);
+        @Test
+        @DisplayName("Should create recipe successfully")
+        void shouldCreateRecipe() {
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toEntity(recipeRequestDto)).thenReturn(recipeEntity);
+            when(recipeMapper.toDto(recipeEntity)).thenReturn(recipeResponseDto);
+            when(recipeRepository.save(any())).thenReturn(recipeEntity);
 
-        // then
-        verify(recipeRepository).save(captor.capture());
-        Recipe saved = captor.getValue();
+            RecipeResponseDto result = recipeService.createRecipe(recipeRequestDto);
 
-        assertThat(saved.getVisibility()).isEqualTo(Visibility.PRIVATE.toString());
-        assertThat(saved.getUser()).isEqualTo(currentUser);
-        saved.getIngredients().forEach(
-                ing -> assertThat(ing.getRecipe()).isEqualTo(recipeEntity)
-        );
+            assertThat(result).isEqualTo(recipeResponseDto);
+            verify(authService).getCurrentUser();
+            verify(recipeRepository).save(recipeEntity);
+            verify(recipeMapper).toDto(recipeEntity);
+
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(recipeEntity.getUser()).isEqualTo(currentUser);
+                softly.assertThat(recipeEntity.getVisibility()).isEqualTo(Visibility.PRIVATE.toString());
+                softly.assertThat(recipeEntity.getIngredients())
+                        .allMatch(i -> i.getRecipe().equals(recipeEntity));
+            });
+        }
+
+        @Test
+        @DisplayName("Should pass correct recipe to repository")
+        void shouldPassCorrectRecipeToRepository() {
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toEntity(recipeRequestDto)).thenReturn(recipeEntity);
+            when(recipeMapper.toDto(any())).thenReturn(recipeResponseDto);
+
+            recipeService.createRecipe(recipeRequestDto);
+
+            verify(recipeRepository).save(recipeCaptor.capture());
+            Recipe saved = recipeCaptor.getValue();
+
+            assertThat(saved)
+                    .extracting(Recipe::getUser, Recipe::getVisibility)
+                    .containsExactly(currentUser, Visibility.PRIVATE.toString());
+            assertThat(recipe.getIngredients())
+                    .asInstanceOf(InstanceOfAssertFactories.iterable(Ingredient.class))
+                    .allSatisfy(ing -> assertThat(ing.getRecipe()).isEqualTo(recipe));
+        }
     }
 
-    @Test
-    void shouldReturnUserAndPublicRecipes() {
-        // given
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeRepository.findAll()).thenReturn(List.of(
-                recipeUserPrivate, recipeUserPublic, recipeOtherPrivate, recipeOtherPublic
-        ));
+    // ============================================================
+    // READ (getAllRecipes & getRecipeById)
+    // ============================================================
 
-        when(recipeMapper.toDto(any())).thenAnswer(invocation -> new RecipeResponseDto());
+    @Nested
+    @DisplayName("Get Recipes")
+    class GetRecipesTests {
 
-        // when
-        List<RecipeResponseDto> result = recipeService.getAllRecipes();
+        @Test
+        @DisplayName("Should return user and public recipes")
+        void shouldReturnUserAndPublicRecipes() {
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findAll()).thenReturn(List.of(
+                    recipeUserPrivate, recipeUserPublic, recipeOtherPrivate, recipeOtherPublic));
+            when(recipeMapper.toDto(any())).thenReturn(new RecipeResponseDto());
 
-        // then
-        assertThat(result.size()).isEqualTo(3);
-        verify(recipeMapper, times(3)).toDto(any(Recipe.class));
-        verify(recipeRepository).findAll();
-        verify(authService).getCurrentUser();
+            List<RecipeResponseDto> result = recipeService.getAllRecipes();
+
+            assertThat(result.size()).isEqualTo(3);
+            verify(recipeMapper, times(3)).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should not return private recipes of other users")
+        void shouldNotReturnPrivateRecipesOfOtherUsers() {
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findAll()).thenReturn(List.of(recipeOtherPrivate));
+
+            List<RecipeResponseDto> result = recipeService.getAllRecipes();
+
+            assertThat(result.isEmpty()).isTrue();
+            verify(recipeMapper, never()).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should return empty list when no recipes")
+        void shouldReturnEmptyListWhenNoRecipes() {
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findAll()).thenReturn(Collections.emptyList());
+
+            List<RecipeResponseDto> result = recipeService.getAllRecipes();
+
+            assertThat(result.isEmpty()).isTrue();
+            verify(recipeMapper, never()).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should call mapper only for filtered recipes")
+        void shouldCallMapperOnlyForFilteredRecipes() {
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findAll()).thenReturn(List.of(
+                    recipeUserPrivate, recipeOtherPrivate, recipeOtherPublic));
+            when(recipeMapper.toDto(any())).thenReturn(new RecipeResponseDto());
+
+            recipeService.getAllRecipes();
+
+            verify(recipeMapper, times(2)).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should return recipe when current user is owner")
+        void shouldReturnRecipeWhenCurrentUserIsOwner() {
+            Long id = 10L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+
+            RecipeResponseDto result = recipeService.getRecipeById(id);
+
+            assertThat(result).isEqualTo(recipeResponseDto);
+            verify(recipeRepository).findById(id);
+            verify(recipeMapper).toDto(recipe);
+        }
+
+        @Test
+        @DisplayName("Should return recipe when it is public and user is different")
+        void shouldReturnRecipeWhenItIsPublicAndUserIsDifferent() {
+            Long id = 20L;
+            recipe.setUser(anotherUser);
+            recipe.setVisibility(Visibility.PUBLIC.toString());
+
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+
+            RecipeResponseDto result = recipeService.getRecipeById(id);
+
+            assertThat(result).isEqualTo(recipeResponseDto);
+            verify(recipeMapper).toDto(recipe);
+        }
+
+        @Test
+        @DisplayName("Should throw when recipe not found")
+        void shouldThrowWhenRecipeNotFound() {
+            Long id = 99L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.empty());
+
+            assertThatExceptionOfType(RecipeNotFoundException.class)
+                    .isThrownBy(() -> recipeService.getRecipeById(id))
+                    .withMessage("Recipe not found");
+
+            verify(recipeMapper, never()).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should throw when recipe is private and user is not owner")
+        void shouldThrowWhenRecipeIsPrivateAndUserIsNotOwner() {
+            Long id = 30L;
+            recipe.setUser(anotherUser);
+            recipe.setVisibility(Visibility.PRIVATE.toString());
+
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+
+            assertThatExceptionOfType(RecipeNotAvailableForCurrentUserException.class)
+                    .isThrownBy(() -> recipeService.getRecipeById(id))
+                    .withMessage("Recipe does not belong to current user and is not public");
+
+            verify(recipeMapper, never()).toDto(any());
+        }
     }
 
-    @Test
-    void shouldNotReturnPrivateRecipesOfOtherUsers() {
-        // given
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeRepository.findAll()).thenReturn(List.of(recipeOtherPrivate));
+    // ============================================================
+    // UPDATE
+    // ============================================================
 
-        // when
-        List<RecipeResponseDto> result = recipeService.getAllRecipes();
+    @Nested
+    @DisplayName("Update Recipe")
+    class UpdateRecipeTests {
 
-        // then
-        assertThat(result.isEmpty()).isTrue();
-        verify(recipeMapper, never()).toDto(any());
+        @Test
+        @DisplayName("Should update recipe when user is owner")
+        void shouldUpdateRecipeWhenUserIsOwner() {
+            Long id = 1L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+
+            RecipeResponseDto result = recipeService.updateRecipe(id, recipeRequestDto);
+
+            assertThat(result).isEqualTo(recipeResponseDto);
+            verify(recipeMapper).update(recipeRequestDto, recipe);
+            verify(recipeRepository).save(recipe);
+            verify(recipeMapper).toDto(recipe);
+
+            assertThat(recipe.getIngredients())
+                    .asInstanceOf(InstanceOfAssertFactories.iterable(Ingredient.class))
+                    .allSatisfy(ing -> assertThat(ing.getRecipe()).isEqualTo(recipe));
+        }
+
+        @Test
+        @DisplayName("Should throw when recipe not found")
+        void shouldThrowWhenRecipeNotFoundWhileUpdating() {
+            Long id = 99L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.empty());
+
+            assertThatExceptionOfType(RecipeNotFoundException.class)
+                    .isThrownBy(() -> recipeService.updateRecipe(id, recipeRequestDto))
+                    .withMessage("Recipe not found");
+
+            verify(recipeRepository).findById(id);
+            verifyNoInteractions(recipeMapper);
+        }
+
+        @Test
+        @DisplayName("Should throw when user is not owner")
+        void shouldThrowWhenUserIsNotOwner() {
+            Long id = 5L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(anotherRecipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+
+            assertThatExceptionOfType(RecipeNotAvailableForCurrentUserException.class)
+                    .isThrownBy(() -> recipeService.updateRecipe(id, recipeRequestDto))
+                    .withMessage("Recipe does not belong to current user");
+
+            verify(recipeMapper, never()).update(any(), any());
+            verify(recipeRepository, never()).save(any());
+        }
+
+        @Test
+        @DisplayName("Should clear ingredients before update")
+        void shouldClearIngredientsBeforeUpdate() {
+            Long id = 2L;
+            recipe.setIngredients(new HashSet<>(List.of(new Ingredient(), new Ingredient())));
+
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+
+            recipeService.updateRecipe(id, recipeRequestDto);
+
+            assertThat(recipe.getIngredients()).isNotNull();
+            verify(recipeMapper).update(recipeRequestDto, recipe);
+        }
+
+        @Test
+        @DisplayName("Should save and map after successful update")
+        void shouldSaveAndMapAfterSuccessfulUpdate() {
+            Long id = 3L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+
+            RecipeResponseDto result = recipeService.updateRecipe(id, recipeRequestDto);
+
+            assertThat(result).isNotNull();
+            verify(recipeRepository).save(recipe);
+            verify(recipeMapper).toDto(recipe);
+        }
     }
 
-    @Test
-    void shouldReturnEmptyListWhenNoRecipes() {
-        // given
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeRepository.findAll()).thenReturn(List.of());
+    // ============================================================
+    // DELETE
+    // ============================================================
 
-        // when
-        List<RecipeResponseDto> result = recipeService.getAllRecipes();
+    @Nested
+    @DisplayName("Delete Recipe")
+    class DeleteRecipeTests {
 
-        // then
-        assertThat(result.isEmpty()).isTrue();
-        verify(recipeMapper, never()).toDto(any());
-    }
+        @Test
+        @DisplayName("Should delete recipe when user is owner")
+        void shouldDeleteRecipeWhenUserIsOwner() {
+            Long id = 1L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
 
-    @Test
-    void shouldCallMapperOnlyForFilteredRecipes() {
-        // given
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeRepository.findAll()).thenReturn(List.of(
-                recipeUserPrivate, recipeOtherPrivate, recipeOtherPublic
-        ));
-        when(recipeMapper.toDto(any())).thenAnswer(invocation -> new RecipeResponseDto());
+            recipeService.deleteRecipe(id);
 
-        // when
-        recipeService.getAllRecipes();
+            verify(recipeRepository).delete(recipe);
+        }
 
-        // then
-        verify(recipeMapper, times(2)).toDto(any());
-    }
+        @Test
+        @DisplayName("Should throw when recipe not found while deleting")
+        void shouldThrowWhenRecipeNotFoundWhileDeleting() {
+            Long id = 42L;
+            when(recipeRepository.findById(id)).thenReturn(Optional.empty());
 
-    @Test
-    void shouldReturnRecipeWhenCurrentUserIsOwner() {
-        // given
-        Long id = 10L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+            assertThatExceptionOfType(RecipeNotFoundException.class)
+                    .isThrownBy(() -> recipeService.deleteRecipe(id))
+                    .withMessage("Recipe not found");
 
-        // when
-        RecipeResponseDto result = recipeService.getRecipeById(id);
+            verify(recipeRepository, never()).delete(any());
+        }
 
-        // then
-        assertThat(result).isEqualTo(recipeResponseDto);
-        verify(recipeRepository).findById(id);
-        verify(recipeMapper).toDto(recipe);
-    }
+        @Test
+        @DisplayName("Should throw when user is not owner while deleting")
+        void shouldThrowWhenUserIsNotOwnerWhileDeleting() {
+            Long id = 2L;
+            recipe.setUser(anotherUser);
 
-    @Test
-    void shouldReturnRecipeWhenItIsPublicAndUserIsDifferent() {
-        // given
-        Long id = 20L;
-        recipe.setUser(anotherUser);
-        recipe.setVisibility(Visibility.PUBLIC.toString());
+            when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
+            when(authService.getCurrentUser()).thenReturn(currentUser);
 
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
+            assertThatExceptionOfType(RecipeNotAvailableForCurrentUserException.class)
+                    .isThrownBy(() -> recipeService.deleteRecipe(id))
+                    .withMessage("Recipe does not belong to current user");
 
-        // when
-        RecipeResponseDto result = recipeService.getRecipeById(id);
-
-        // then
-        assertThat(result).isEqualTo(recipeResponseDto);
-        verify(recipeMapper).toDto(recipe);
-    }
-
-    @Test
-    void shouldThrowWhenRecipeNotFoundWhileFinding() {
-        // given
-        Long id = 99L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.empty());
-
-        // when / then
-        assertThatThrownBy(() -> recipeService.getRecipeById(id))
-                .isInstanceOf(RecipeNotFoundException.class)
-                .hasMessage("Recipe not found");
-
-        verify(recipeMapper, never()).toDto(any());
-    }
-
-    @Test
-    void shouldThrowWhenRecipeIsPrivateAndUserIsNotOwner() {
-        // given
-        Long id = 30L;
-        recipe.setUser(anotherUser);
-        recipe.setVisibility(Visibility.PRIVATE.toString());
-
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-
-        // when / then
-        assertThatThrownBy(() -> recipeService.getRecipeById(id))
-                .isInstanceOf(RecipeNotAvailableForCurrentUserException.class)
-                .hasMessage("Recipe does not belong to current user and is not public");
-
-        verify(recipeMapper, never()).toDto(any());
-    }
-
-    @Test
-    void shouldUpdateRecipeWhenUserIsOwner() {
-        // given
-        Long id = 1L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
-
-        // when
-        RecipeResponseDto result = recipeService.updateRecipe(id, recipeRequestDto);
-
-        // then
-        assertThat(result).isEqualTo(recipeResponseDto);
-
-        verify(recipeMapper).update(recipeRequestDto, recipe);
-        verify(recipeRepository).save(recipe);
-        verify(recipeMapper).toDto(recipe);
-
-        recipe.getIngredients().forEach(ingredient ->
-                assertThat(ingredient.getRecipe()).isEqualTo(recipe)
-        );
-    }
-
-    @Test
-    void shouldThrowWhenRecipeNotFoundWhileUpdatingRecipe() {
-        // given
-        Long id = 99L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.empty());
-
-        // when / then
-        assertThatThrownBy(() -> recipeService.updateRecipe(id, recipeRequestDto))
-                .isInstanceOf(RecipeNotFoundException.class)
-                .hasMessage("Recipe not found");
-
-        verify(recipeRepository).findById(id);
-        verifyNoInteractions(recipeMapper);
-    }
-
-    @Test
-    void shouldThrowWhenUserIsNotOwner() {
-        // given
-        Long id = 5L;
-        recipe.setUser(anotherUser);
-
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-
-        // when / then
-        assertThatThrownBy(() -> recipeService.updateRecipe(id, recipeRequestDto))
-                .isInstanceOf(RecipeNotAvailableForCurrentUserException.class)
-                .hasMessage("Recipe does not belong to current user");
-
-        verify(recipeRepository).findById(id);
-        verify(recipeMapper, never()).update(any(), any());
-        verify(recipeRepository, never()).save(any());
-    }
-
-    @Test
-    void shouldClearIngredientsBeforeUpdate() {
-        // given
-        Long id = 2L;
-        Set<Ingredient> oldIngredients = new HashSet<>(List.of(new Ingredient(), new Ingredient()));
-        recipe.setIngredients(oldIngredients);
-
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
-
-        // when
-        recipeService.updateRecipe(id, recipeRequestDto);
-
-        // then
-        assertThat(recipe.getIngredients()).isNotNull();
-        verify(recipeMapper).update(recipeRequestDto, recipe);
-    }
-
-    @Test
-    void shouldSaveAndMapAfterSuccessfulUpdate() {
-        // given
-        Long id = 3L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-        when(recipeMapper.toDto(recipe)).thenReturn(recipeResponseDto);
-
-        // when
-        RecipeResponseDto result = recipeService.updateRecipe(id, recipeRequestDto);
-
-        // then
-        assertThat(result).isNotNull();
-        verify(recipeRepository, times(1)).save(recipe);
-        verify(recipeMapper, times(1)).toDto(recipe);
-    }
-
-    @Test
-    void shouldDeleteRecipeWhenUserIsOwner() {
-        // given
-        Long id = 1L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-
-        // when
-        recipeService.deleteRecipe(id);
-
-        // then
-        verify(recipeRepository).findById(id);
-        verify(recipeRepository).delete(recipe);
-    }
-
-    @Test
-    void shouldThrowWhenRecipeNotFoundWhileDeleting() {
-        // given
-        Long id = 42L;
-        when(recipeRepository.findById(id)).thenReturn(Optional.empty());
-
-        // when / then
-        assertThatThrownBy(() -> recipeService.deleteRecipe(id))
-                .isInstanceOf(RecipeNotFoundException.class)
-                .hasMessage("Recipe not found");
-
-        verify(recipeRepository).findById(id);
-        verify(recipeRepository, never()).delete(any());
-    }
-
-    @Test
-    void shouldThrowWhenUserIsNotOwnerWhileDeleting() {
-        // given
-        Long id = 2L;
-        recipe.setUser(anotherUser);
-
-        when(recipeRepository.findById(id)).thenReturn(Optional.of(recipe));
-        when(authService.getCurrentUser()).thenReturn(currentUser);
-
-        // when / then
-        assertThatThrownBy(() -> recipeService.deleteRecipe(id))
-                .isInstanceOf(RecipeNotAvailableForCurrentUserException.class)
-                .hasMessage("Recipe does not belong to current user");
-
-        verify(recipeRepository).findById(id);
-        verify(recipeRepository, never()).delete(any());
+            verify(recipeRepository, never()).delete(any());
+        }
     }
 }
