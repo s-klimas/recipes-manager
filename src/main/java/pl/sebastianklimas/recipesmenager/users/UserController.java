@@ -15,6 +15,7 @@ import pl.sebastianklimas.recipesmenager.users.dto.RegisterUserRequestDto;
 import pl.sebastianklimas.recipesmenager.users.dto.RegisterUserResponseDto;
 import pl.sebastianklimas.recipesmenager.users.dto.UserDto;
 import pl.sebastianklimas.recipesmenager.users.exceptions.DuplicateUserException;
+import pl.sebastianklimas.recipesmenager.users.exceptions.RoleNotFoundException;
 import pl.sebastianklimas.recipesmenager.users.exceptions.UserNotFoundException;
 
 @AllArgsConstructor
@@ -76,5 +77,10 @@ public class UserController {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Void> handleAccessDenied() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<Void> handleRoleNotFound() {
+        return ResponseEntity.notFound().build();
     }
 }

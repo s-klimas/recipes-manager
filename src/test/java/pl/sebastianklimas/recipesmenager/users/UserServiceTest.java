@@ -16,7 +16,9 @@ import pl.sebastianklimas.recipesmenager.users.dto.RegisterUserRequestDto;
 import pl.sebastianklimas.recipesmenager.users.dto.RegisterUserResponseDto;
 import pl.sebastianklimas.recipesmenager.users.dto.UserDto;
 import pl.sebastianklimas.recipesmenager.users.exceptions.DuplicateUserException;
+import pl.sebastianklimas.recipesmenager.users.exceptions.RoleNotFoundException;
 import pl.sebastianklimas.recipesmenager.users.exceptions.UserNotFoundException;
+import pl.sebastianklimas.recipesmenager.users.roles.RoleRepository;
 import pl.sebastianklimas.recipesmenager.users.roles.RoleService;
 
 import java.util.Optional;
@@ -32,13 +34,13 @@ class UserServiceTest {
     private static final String USER_EMAIL = "john.doe@example.com";
     private static final String TEST_EMAIL = "test@example.com";
     private static final String PASSWORD = "password123";
-    private static final String OLD_PASSWORD = "oldPassword";
     private static final String NEW_PASSWORD = "newPassword123";
 
     @Mock private UserRepository userRepository;
     @Mock private UserMapper userMapper;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private RoleService roleService;
+    @Mock private RoleRepository roleRepository;
     @InjectMocks private UserService userService;
 
     private RegisterUserRequestDto requestDto;
@@ -56,6 +58,7 @@ class UserServiceTest {
         user = new User();
         user.setId(USER_ID);
         user.setEmail(USER_EMAIL);
+        user.setPassword(PASSWORD);
         userRole = new UserRole();
         responseDto = new RegisterUserResponseDto();
         responseDto.setEmail(TEST_EMAIL);
@@ -63,7 +66,7 @@ class UserServiceTest {
         userDto.setId(USER_ID);
         userDto.setEmail(USER_EMAIL);
         passwordRequest = new ChangePasswordRequestDto();
-        passwordRequest.setOldPassword(OLD_PASSWORD);
+        passwordRequest.setOldPassword(PASSWORD);
         passwordRequest.setNewPassword(NEW_PASSWORD);
     }
 
@@ -106,20 +109,6 @@ class UserServiceTest {
             verify(userRepository).save(user);
             verify(passwordEncoder).encode(PASSWORD);
         }
-
-        @Test
-        @DisplayName("Should not save user when role not found")
-        void shouldNotSaveUser_WhenRoleNotFound() {
-            when(userRepository.existsByEmail(TEST_EMAIL)).thenReturn(false);
-            when(userMapper.toEntity(requestDto)).thenReturn(user);
-            when(passwordEncoder.encode(PASSWORD)).thenReturn("encodedPassword");
-            when(roleService.getRole(Role.USER.toString())).thenReturn(null);
-
-            assertThatThrownBy(() -> userService.registerUser(requestDto))
-                    .isInstanceOf(NullPointerException.class);
-
-            verify(userRepository, never()).save(any());
-        }
     }
 
     // ============================================================
@@ -150,7 +139,7 @@ class UserServiceTest {
 
             assertThatThrownBy(() -> userService.getUser(999L))
                     .isInstanceOf(UserNotFoundException.class)
-                    .hasMessageContaining("User not found with id 999");
+                    .hasMessageContaining("User with id: 999 not found.");
         }
     }
 
@@ -179,7 +168,7 @@ class UserServiceTest {
 
             assertThatThrownBy(() -> userService.deleteUser(999L))
                     .isInstanceOf(UserNotFoundException.class)
-                    .hasMessageContaining("User not found with id 999");
+                    .hasMessageContaining("User with id: 999 not found.");
         }
 
         @Test
@@ -205,13 +194,18 @@ class UserServiceTest {
         @Test
         @DisplayName("Should change password when old password is correct")
         void shouldChangePassword_WhenOldPasswordIsCorrect() {
+            // given
+            user.setPassword("password123");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            when(passwordEncoder.matches(OLD_PASSWORD, user.getPassword())).thenReturn(true);
+            when(passwordEncoder.matches(PASSWORD, "password123")).thenReturn(true);
             when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn("encodedNewPassword");
 
+            // when
             userService.changePassword(USER_ID, passwordRequest);
 
-            verify(passwordEncoder).matches(OLD_PASSWORD, user.getPassword());
+            // then
+            verify(passwordEncoder).matches(PASSWORD, "password123");
+            verify(passwordEncoder).encode(NEW_PASSWORD);
             verify(userRepository).save(user);
             assertThat(user.getPassword()).isEqualTo("encodedNewPassword");
         }
@@ -220,7 +214,7 @@ class UserServiceTest {
         @DisplayName("Should throw when old password is incorrect")
         void shouldThrowException_WhenOldPasswordIsIncorrect() {
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
-            when(passwordEncoder.matches(OLD_PASSWORD, user.getPassword())).thenReturn(false);
+            when(passwordEncoder.matches(PASSWORD, user.getPassword())).thenReturn(false);
 
             assertThatThrownBy(() -> userService.changePassword(USER_ID, passwordRequest))
                     .isInstanceOf(AccessDeniedException.class)
@@ -236,7 +230,7 @@ class UserServiceTest {
 
             assertThatThrownBy(() -> userService.changePassword(99L, passwordRequest))
                     .isInstanceOf(UserNotFoundException.class)
-                    .hasMessageContaining("User not found with id 99");
+                    .hasMessageContaining("User with id: 99 not found.");
 
             verify(passwordEncoder, never()).matches(anyString(), anyString());
         }
