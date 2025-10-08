@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +15,6 @@ import pl.sebastianklimas.recipesmenager.users.dto.RegisterUserRequestDto;
 import pl.sebastianklimas.recipesmenager.users.dto.RegisterUserResponseDto;
 import pl.sebastianklimas.recipesmenager.users.dto.UserDto;
 import pl.sebastianklimas.recipesmenager.users.exceptions.DuplicateUserException;
-import pl.sebastianklimas.recipesmenager.users.exceptions.RoleNotFoundException;
 import pl.sebastianklimas.recipesmenager.users.exceptions.UserNotFoundException;
 import pl.sebastianklimas.recipesmenager.users.roles.RoleRepository;
 import pl.sebastianklimas.recipesmenager.users.roles.RoleService;
@@ -25,7 +23,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
