@@ -195,7 +195,6 @@ class UserServiceTest {
         @DisplayName("Should change password when old password is correct")
         void shouldChangePassword_WhenOldPasswordIsCorrect() {
             // given
-            user.setPassword("password123");
             when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(PASSWORD, "password123")).thenReturn(true);
             when(passwordEncoder.encode(NEW_PASSWORD)).thenReturn("encodedNewPassword");
