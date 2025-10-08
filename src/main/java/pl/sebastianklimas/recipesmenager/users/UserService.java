@@ -46,13 +46,13 @@ public class UserService {
     }
 
     public void changePassword(Long userId, ChangePasswordRequestDto request) {
-        var user =findUserById(userId);
+        var user = findUserById(userId);
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new AccessDeniedException("Password does not match");
         }
 
-        user.setPassword(request.getNewPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
 
