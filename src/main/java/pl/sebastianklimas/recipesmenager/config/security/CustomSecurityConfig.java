@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.sebastianklimas.recipesmenager.common.SecurityRules;
 import pl.sebastianklimas.recipesmenager.config.jwt.JwtAuthenticationFilter;
 
 import java.util.List;

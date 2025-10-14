@@ -1,4 +1,4 @@
-package pl.sebastianklimas.recipesmenager.common;
+package pl.sebastianklimas.recipesmenager.config.security;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
