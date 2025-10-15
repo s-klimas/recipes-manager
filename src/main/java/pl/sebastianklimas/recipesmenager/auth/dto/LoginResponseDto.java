@@ -8,8 +8,8 @@ import pl.sebastianklimas.recipesmenager.config.jwt.Jwt;
 @AllArgsConstructor
 @Getter
 public class LoginResponseDto {
-    @Schema(name = "Access token")
+    @Schema(name = "accessToken", description = "Access token")
     private Jwt accessToken;
-    @Schema(name = "Refresh token")
+    @Schema(name = "refreshToken", description = "Refresh token")
     private Jwt refreshToken;
 }

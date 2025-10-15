@@ -11,10 +11,10 @@ import lombok.Data;
 public class LoginRequestDto {
     @NotBlank(message = "Email is required")
     @Email
-    @Schema(name = "User's email", example = "user@example.com")
+    @Schema(name = "email", example = "admin@example.com", description = "User's email")
     private String email;
 
     @NotBlank(message = "Password is required")
-    @Schema(name = "User's password", example = "user_password")
+    @Schema(name = "password", example = "adminpass", description = "User's password")
     private String password;
 }

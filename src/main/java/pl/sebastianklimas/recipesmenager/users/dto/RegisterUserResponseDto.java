@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class RegisterUserResponseDto {
-    @Schema(name = "User ID", example = "1")
+    @Schema(name = "id", example = "1", description = "User ID")
     private Long id;
-    @Schema(name = "User login", example = "user1")
+    @Schema(name = "login", example = "user1", description = "User login")
     private String login;
-    @Schema(name = "User email", example = "user@example.com")
+    @Schema(name = "email", example = "user@example.com", description = "User email")
     private String email;
 }
