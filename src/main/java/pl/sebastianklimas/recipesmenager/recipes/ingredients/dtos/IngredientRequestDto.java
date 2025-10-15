@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 @Data
 public class IngredientRequestDto {
     @NotBlank
-    @Schema(name = "Ingredient name", example = "Milk")
+    @Schema(name = "name", example = "Milk", description = "Ingredient name")
     private String name;
-    @Schema(name = "Count of ingredients", example = "0.5")
+    @Schema(name = "count", example = "0.5", description = "Count of ingredients")
     private BigDecimal count;
     @NotBlank
-    @Schema(name = "Ingredient unit", example = "l")
+    @Schema(name = "unit", example = "l", description = "Ingredient unit")
     private String unit;
 }

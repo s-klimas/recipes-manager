@@ -1,8 +1,9 @@
-package pl.sebastianklimas.recipesmenager.common;
+package pl.sebastianklimas.recipesmenager.swagger;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.stereotype.Component;
+import pl.sebastianklimas.recipesmenager.config.security.SecurityRules;
 
 @Component
 public class SwaggerSecurityRules implements SecurityRules {
