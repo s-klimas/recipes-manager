@@ -1,80 +1,93 @@
-# Recipe Manager / RM
+# Recipes Manager
+## Tech Stack
 
-A web application to help you store your recipes.
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![AI](https://img.shields.io/badge/AI-%230080FF?style=for-the-badge&logo=openai&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![MapStruct](https://img.shields.io/badge/MapStruct-5C2D91?style=for-the-badge)
+![Lombok](https://img.shields.io/badge/Lombok-A50?style=for-the-badge&logo=lombok&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 
-## Technology used
-### Backend
-    - Java
-    - Java Spring
-    - Hibernate
-    - Liquibase
-    - Mailtrap
-### Frontend
-    - HTML
-    - Bootstrap
-    - CSS
-    - JS
-### Testing
-    - JUnit 5
-    - AssertJ
-    - Mockito
-    - Mockaroo (for generating test data)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Hibernate](https://img.shields.io/badge/Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+![Liquibase](https://img.shields.io/badge/Liquibase-003BCE?style=for-the-badge&logo=liquibase&logoColor=white)
 
-## Endpoints available for the web browser
-```java
-    @GetMapping("/")
-    public String home(Model model) {};
+![JUnit5](https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=java&logoColor=white)
+![AssertJ](https://img.shields.io/badge/AssertJ-0069C0?style=for-the-badge)
+![Mockito](https://img.shields.io/badge/Mockito-46B6AC?style=for-the-badge&logo=java&logoColor=white)
+
+## Description
+
+Recipes Manager is a backend service built with Java and Spring Boot that provides a secure, scalable API for managing user accounts and recipes. It supports user registration, authentication with JWT, role-based access control, and recipe CRUD operations. The project integrates AI-powered chat and image processing features to assist users with recipe management.
+
+The API is documented with [Swagger/OpenAPI](src/main/java/pl/sebastianklimas/recipesmenager/swagger/SwaggerConfig.java) for easy exploration and integration.
+
+## Interesting Techniques
+
+- **JWT Authentication and Authorization**: The project uses JSON Web Tokens for stateless authentication, with refresh tokens managed via secure HTTP-only cookies. This approach is implemented in [AuthController.java](src/main/java/pl/sebastianklimas/recipesmenager/auth/AuthController.java) and [JwtAuthenticationFilter.java](src/main/java/pl/sebastianklimas/recipesmenager/config/jwt/JwtAuthenticationFilter.java).
+- **Spring Security Customization**: Custom security rules are defined via the `SecurityRules` interface and implemented in feature-specific classes like [AuthSecurityRules.java](src/main/java/pl/sebastianklimas/recipesmenager/auth/AuthSecurityRules.java) and [SwaggerSecurityRules.java](src/main/java/pl/sebastianklimas/recipesmenager/swagger/SwaggerSecurityRules.java), allowing modular and clear access control.
+- **AI Integration with Spring AI**: The project integrates [Spring AI](https://spring.io/projects/spring-ai) to provide chat and image-to-recipe conversion features, leveraging large language models and chat memory. See [ChatService.java](src/main/java/pl/sebastianklimas/recipesmenager/ai/chat/ChatService.java) and [ChatController.java](src/main/java/pl/sebastianklimas/recipesmenager/ai/chat/ChatController.java).
+- **Image Processing with Imgscalr**: The [ImageService.java](src/main/java/pl/sebastianklimas/recipesmenager/ai/image/ImageService.java) uses the lightweight [Imgscalr](https://github.com/rkalla/imgscalr) library for efficient image resizing before processing.
+- **MapStruct for DTO Mapping**: The project uses [MapStruct](https://mapstruct.org/) to generate type-safe mappers between entities and DTOs, improving maintainability and reducing boilerplate. Examples include [UserMapper.java](src/main/java/pl/sebastianklimas/recipesmenager/users/UserMapper.java) and [RecipeMapper.java](src/main/java/pl/sebastianklimas/recipesmenager/recipes/RecipeMapper.java).
+- **Lombok for Boilerplate Reduction**: Lombok annotations like `@Getter`, `@Setter`, `@AllArgsConstructor`, and `@Data` are used extensively to reduce boilerplate code in entities and DTOs.
+- **JPA and Hibernate for ORM**: Entities like [User.java](src/main/java/pl/sebastianklimas/recipesmenager/users/User.java) and [Recipe.java](src/main/java/pl/sebastianklimas/recipesmenager/recipes/Recipe.java) use JPA annotations for ORM mapping, with lifecycle callbacks (`@PrePersist`, `@PreUpdate`) to manage timestamps.
+- **Exception Handling with Spring MVC**: Controllers handle domain-specific exceptions like `UserNotFoundException` and `RecipeNotFoundException` to return appropriate HTTP status codes.
+- **Unit Testing with JUnit 5, Mockito, and AssertJ**: Comprehensive unit tests cover service layers, using [Mockito](https://site.mockito.org/) for mocking and [AssertJ](https://assertj.github.io/doc/) for fluent assertions.
+
+## Notable Technologies and Libraries
+
+- **Spring AI**: Provides integration with large language models and chat memory for AI-powered features.
+- **Imgscalr**: A simple and efficient image-scaling library for Java.
+- **MapStruct**: Compile-time code generator for mapping between Java bean types.
+- **Lombok**: Reduces boilerplate code with annotations.
+- **Swagger/OpenAPI**: API documentation and exploration.
+- **PostgreSQL**: The primary database, managed via JPA/Hibernate.
+- **Liquibase**: Database migration tool (implied by `src/main/resources/db/data/0001_user_and_roles.sql`).
+- **JUnit 5, Mockito, AssertJ**: Testing frameworks for unit and integration tests.
+
+## Project Structure
+
 ```
-Endpoint has 2 containers. For the non-logged-in user, the application description page is displayed (Lorem ipsum...) and for the logged-in user, the regulatory overview view.
-#### Non-logged-in
-![home-not-logged-in](https://github.com/s-klimas/RecipesManager/assets/72698285/a14413ac-1012-4381-a731-9a55497f99cc)
-
-#### Logged-in
-![home-logged-in](https://github.com/s-klimas/RecipesManager/assets/72698285/b5bd69e2-0ff2-4a20-91bd-bd3229193272)
-
-```java
-    @GetMapping("/login")
-    public String loginForm() {};
+/src
+  /main
+    /java
+      /pl/sebastianklimas/recipesmenager
+        /ai
+          /chat
+          /image
+          /tools
+        /auth
+        /config
+          /ai
+          /jwt
+          /security
+        /recipes
+          /ingredients
+            /dtos
+        /swagger
+        /users
+          /dto
+          /exceptions
+          /roles
+    /resources
+      /db
+        /data
+  /test
+    /java
+      /pl/sebastianklimas/recipesmenager
+        /ai
+          /image
+        /auth
+        /recipes
+        /users
 ```
-Includes a login form and links to registration and password recovery.
-![login](https://github.com/s-klimas/RecipesManager/assets/72698285/0076baae-f3ea-4eb8-8174-b2f92c92f299)
 
-```java
-    @GetMapping("/register")
-    public String registrationForm(Model model) {};
-```
-Endpoint displaying a form for registration. (password validation is not working)
-![register](https://github.com/s-klimas/RecipesManager/assets/72698285/620b8103-cdd6-4d8c-8d7e-ba6848d71231)
-
-```java
-    @GetMapping("/forget-password")
-    public String forget() {};
-```
-The beginning of the flow to account recovery.
-![forget-password](https://github.com/s-klimas/RecipesManager/assets/72698285/b3743a6c-8f8b-4599-95c7-3c729744d9aa)
-
-```java
-    @GetMapping("/recovery")
-    public String recovery(@RequestParam String token, @RequestParam String email, Model model) {};
-```
-Continue the flow to recover the account and ultimately set a new password. Flow is secured by a token that allows you to change the password for your account for 24 hours.
-![recovery](https://github.com/s-klimas/RecipesManager/assets/72698285/d28a827d-0f0d-43ea-b866-59ebb0888f09)
-
-```java
-    @GetMapping("/recipes/{id}")
-    public String recipe(@PathVariable long id, Model model) {};
-```
-Endpoint displaying a specific recipe and allowing it to be edited or deleted.
-![recipe](https://github.com/s-klimas/RecipesManager/assets/72698285/04f8579c-8ecb-402d-9ff7-e5b9e0d7def5)
-
-```java
-    @GetMapping("/add-recipe")
-    public String addRecipeForm(Model model) {};
-```
-Flow to create new recipes and add them to your account.
-![add-recipe](https://github.com/s-klimas/RecipesManager/assets/72698285/c29f0fd7-f99e-423e-bb49-5bf4dfc09943)
-
-### The application also contains POST endpoints which enable it to function correctly.
-
-
-```All sensitive data has been removed from the programme code.```
+- **/ai**: Contains AI-related services including chat, image processing, and AI tools integration.
+- **/auth**: Authentication and authorization logic, including controllers and services.
+- **/config**: Configuration classes for security, JWT, AI chat memory, and Swagger.
+- **/recipes**: Core domain logic for recipes and ingredients, including DTOs and exceptions.
+- **/swagger**: Swagger/OpenAPI configuration and security rules.
+- **/users**: User management, roles, DTOs, exceptions, and services.
+- **/resources/db/data**: SQL scripts for initial data seeding.
+- **/test**: Unit tests organized by feature.
