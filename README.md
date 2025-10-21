@@ -31,12 +31,13 @@ API is fully documented with **[Swagger/OpenAPI](src/main/java/pl/sebastianklima
 ---
 
 ## 🔐 Environment Variables
-| Variable      | Description                  | Example                                    |
-| ------------- | ---------------------------- | ------------------------------------------ |
-| `JWT_SECRET`  | Secret key for token signing | `mySecretKey123`                           |
-| `DB_URL`      | Database connection string   | `jdbc:postgresql://localhost:5432/recipes` |
-| `DB_USERNAME` | Database user                | `postgres`                                 |
-| `DB_PASSWORD` | Database password            | `password`                                 |
+| Variable         | Description                  | Example                                    |
+|------------------|------------------------------|--------------------------------------------|
+| `JWT_SECRET`     | Secret key for token signing | `mySecretKey123`                           |
+| `DB_URL`         | Database connection string   | `jdbc:postgresql://localhost:5432/recipes` |
+| `DB_USERNAME`    | Database user                | `postgres`                                 |
+| `DB_PASSWORD`    | Database password            | `password`                                 |
+| `OPENAI_API_KEY` | OpenAI API key               | `sk-yourapikey`                            |
 
 ---
 
