@@ -28,7 +28,7 @@ public class RecipeTools {
 
     @Tool(description = "Find all available recipes in database for logged user.")
     public List<RecipeResponseDto> getAllRecipes() {
-        return recipeService.getAllRecipes();
+        return recipeService.getAllRecipesWithoutPages();
     }
 
     @Tool(description = "Updates recipe with given id. Updates name, instructions and ingredients which have name, count and unit.")
