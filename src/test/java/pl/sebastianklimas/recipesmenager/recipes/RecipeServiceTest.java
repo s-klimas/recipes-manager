@@ -145,7 +145,7 @@ class RecipeServiceTest {
                     recipeUserPrivate, recipeUserPublic, recipeOtherPrivate, recipeOtherPublic));
             when(recipeMapper.toDto(any())).thenReturn(new RecipeResponseDto());
 
-            List<RecipeResponseDto> result = recipeService.getAllRecipes();
+            List<RecipeResponseDto> result = recipeService.getAllRecipesWithoutPages();
 
             assertThat(result.size()).isEqualTo(3);
             verify(recipeMapper, times(3)).toDto(any());
@@ -157,7 +157,7 @@ class RecipeServiceTest {
             when(authService.getCurrentUser()).thenReturn(currentUser);
             when(recipeRepository.findAll()).thenReturn(List.of(recipeOtherPrivate));
 
-            List<RecipeResponseDto> result = recipeService.getAllRecipes();
+            List<RecipeResponseDto> result = recipeService.getAllRecipesWithoutPages();
 
             assertThat(result.isEmpty()).isTrue();
             verify(recipeMapper, never()).toDto(any());
@@ -169,7 +169,7 @@ class RecipeServiceTest {
             when(authService.getCurrentUser()).thenReturn(currentUser);
             when(recipeRepository.findAll()).thenReturn(Collections.emptyList());
 
-            List<RecipeResponseDto> result = recipeService.getAllRecipes();
+            List<RecipeResponseDto> result = recipeService.getAllRecipesWithoutPages();
 
             assertThat(result.isEmpty()).isTrue();
             verify(recipeMapper, never()).toDto(any());
@@ -183,9 +183,105 @@ class RecipeServiceTest {
                     recipeUserPrivate, recipeOtherPrivate, recipeOtherPublic));
             when(recipeMapper.toDto(any())).thenReturn(new RecipeResponseDto());
 
-            recipeService.getAllRecipes();
+            recipeService.getAllRecipesWithoutPages();
 
             verify(recipeMapper, times(2)).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should return paged user and public recipes")
+        void shouldReturnPagedUserAndPublicRecipes() {
+            int page = 0;
+            int size = 10;
+            String sortBy = "id";
+
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findByUserOrVisibility(
+                    currentUser,
+                    Visibility.PUBLIC.toString(),
+                    pageable
+            )).thenReturn(new PageImpl<>(List.of(
+                    recipeUserPrivate,
+                    recipeUserPublic,
+                    recipeOtherPublic
+            )));
+            when(recipeMapper.toDto(any())).thenReturn(new RecipeResponseDto());
+
+            Page<RecipeResponseDto> result =
+                    recipeService.getAllRecipes(page, size, sortBy);
+
+            assertThat(result.getContent()).hasSize(3);
+            verify(recipeMapper, times(3)).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should return empty page when no recipes found")
+        void shouldReturnEmptyPageWhenNoRecipesFound() {
+            int page = 0;
+            int size = 10;
+            String sortBy = "id";
+
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findByUserOrVisibility(
+                    currentUser,
+                    Visibility.PUBLIC.toString(),
+                    pageable
+            )).thenReturn(Page.empty());
+
+            Page<RecipeResponseDto> result =
+                    recipeService.getAllRecipes(page, size, sortBy);
+
+            assertThat(result.getContent()).isEmpty();
+            verify(recipeMapper, never()).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should call mapper only for recipes returned by repository")
+        void shouldCallMapperOnlyForReturnedRecipes() {
+            int page = 1;
+            int size = 5;
+            String sortBy = "name";
+
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+
+            when(authService.getCurrentUser()).thenReturn(currentUser);
+            when(recipeRepository.findByUserOrVisibility(
+                    currentUser,
+                    Visibility.PUBLIC.toString(),
+                    pageable
+            )).thenReturn(new PageImpl<>(List.of(
+                    recipeUserPrivate,
+                    recipeOtherPublic
+            )));
+            when(recipeMapper.toDto(any())).thenReturn(new RecipeResponseDto());
+
+            recipeService.getAllRecipes(page, size, sortBy);
+
+            verify(recipeMapper, times(2)).toDto(any());
+        }
+
+        @Test
+        @DisplayName("Should throw exception when size is greater than 100")
+        void shouldThrowExceptionWhenSizeIsGreaterThan100() {
+            assertThatThrownBy(() ->
+                    recipeService.getAllRecipes(0, 101, "id")
+            ).isInstanceOf(IllegalArgumentException.class);
+
+            verify(recipeRepository, never()).findByUserOrVisibility(any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("Should throw exception when page is negative")
+        void shouldThrowExceptionWhenPageIsNegative() {
+            assertThatThrownBy(() ->
+                    recipeService.getAllRecipes(-1, 10, "id")
+            ).isInstanceOf(IllegalArgumentException.class);
+
+            verify(recipeRepository, never()).findByUserOrVisibility(any(), any(), any());
         }
 
         @Test
