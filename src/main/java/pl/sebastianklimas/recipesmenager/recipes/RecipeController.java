@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +27,17 @@ public class RecipeController {
 
     @GetMapping
     @Operation(summary = "Gets all recipes available the the logged user.")
-    public List<RecipeResponseDto> getAllRecipes() {
-        return recipeService.getAllRecipes();
+    public Page<RecipeResponseDto> getAllRecipes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        return recipeService.getAllRecipes(page, size, sortBy);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Gets the recipe by ID.")
     public ResponseEntity<RecipeResponseDto> getRecipe(
-            @Parameter(name = "id", description = "The ID of the recipe.")
-            @PathVariable(name = "id") Long id
+            @PathVariable @Parameter(name = "id", description = "The ID of the recipe.") Long id
     ) {
         RecipeResponseDto recipeById = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipeById);
@@ -57,8 +60,7 @@ public class RecipeController {
     @PutMapping("/{id}")
     @Operation(summary = "Updates the recipe.")
     public ResponseEntity<RecipeResponseDto> updateRecipe(
-            @Parameter(description = "The ID of the recipe to update.")
-            @PathVariable(name = "id") Long id,
+            @PathVariable @Parameter(description = "The ID of the recipe to update.") Long id,
             @Parameter(description = "New recipe data.")
             @Valid @RequestBody RecipeRequestDto recipeDto) {
         return ResponseEntity.ok(recipeService.updateRecipe(id, recipeDto));
@@ -67,8 +69,7 @@ public class RecipeController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletes the recipe.")
     public ResponseEntity<?> deleteRecipe(
-            @Parameter(description = "The ID of the recipe to delete.")
-            @PathVariable(name = "id") Long id
+            @PathVariable @Parameter(description = "The ID of the recipe to delete.") Long id
     ) {
         recipeService.deleteRecipe(id);
 

@@ -1,6 +1,10 @@
 package pl.sebastianklimas.recipesmenager.recipes;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.sebastianklimas.recipesmenager.auth.AuthService;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
@@ -34,12 +38,25 @@ public class RecipeService {
         return recipeMapper.toDto(recipe);
     }
 
-    public List<RecipeResponseDto> getAllRecipes() {
+    public List<RecipeResponseDto> getAllRecipesWithoutPages() {
         User currentUser = authService.getCurrentUser();
         return recipeRepository.findAll().stream()
                 .filter(recipe -> (currentUser.equals(recipe.getUser()) || recipe.getVisibility().equals(Visibility.PUBLIC.toString())))
                 .map(recipeMapper::toDto)
                 .toList();
+    }
+
+    public Page<RecipeResponseDto> getAllRecipes(int  page, int size, String sortBy) {
+        if (size > 100) throw new IllegalArgumentException();
+        if (page < 0) throw new IllegalArgumentException();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+
+        User currentUser = authService.getCurrentUser();
+
+        return recipeRepository
+                .findByUserOrVisibility(currentUser, Visibility.PUBLIC.toString(), pageable)
+                .map(recipeMapper::toDto);
     }
 
     public RecipeResponseDto getRecipeById(Long id) {
