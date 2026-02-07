@@ -9,6 +9,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 import pl.sebastianklimas.recipesmenager.auth.AuthService;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeRequestDto;
 import pl.sebastianklimas.recipesmenager.recipes.dtos.RecipeResponseDto;
@@ -19,8 +20,7 @@ import pl.sebastianklimas.recipesmenager.users.User;
 
 import java.util.*;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -212,7 +212,7 @@ class RecipeServiceTest {
             Page<RecipeResponseDto> result =
                     recipeService.getAllRecipes(page, size, sortBy);
 
-            assertThat(result.getContent()).hasSize(3);
+            assertThat(result.getContent().size()).isEqualTo(3);
             verify(recipeMapper, times(3)).toDto(any());
         }
 
@@ -235,7 +235,7 @@ class RecipeServiceTest {
             Page<RecipeResponseDto> result =
                     recipeService.getAllRecipes(page, size, sortBy);
 
-            assertThat(result.getContent()).isEmpty();
+            assertThat(result.getContent().size()).isEqualTo(0);
             verify(recipeMapper, never()).toDto(any());
         }
 
